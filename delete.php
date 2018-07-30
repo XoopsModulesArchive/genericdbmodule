@@ -11,7 +11,7 @@ $did = isset($_POST['did']) ? intval($_POST['did']) : 0;
 // 存在チェック
 $sql = "SELECT d.*, u.uname FROM $data_tbl AS d LEFT OUTER JOIN $users_tbl AS u ON d.add_uid = u.uid WHERE d.did = $did";
 $res = $xoopsDB->query($sql);
-if ($xoopsDB->getRowsNum($res) == 0) {
+if (0 == $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_NO_ERR_MSG'));
 }
 
@@ -21,8 +21,8 @@ if (!checkPerm($gids, $cfg_manage_gids) && $uid != $row['add_uid']) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_PERM_ERR_MSG'));
 }
 
-$errors = array();
-if ($op == 'delete') {
+$errors = [];
+if ('delete' == $op) {
     // トークンチェック
     if (!XoopsMultiTokenHandler::quickValidate($dirname . '_delete')) {
         $errors[] = getMDConst('_TOKEN_ERR_MSG');
@@ -38,7 +38,7 @@ if ($op == 'delete') {
             }
             $insert_his_sql .= ") VALUES($did, 'delete', $uid, '$datetime'";
             foreach ($item_defs as $item_name => $item_def) {
-                if ($row[$item_name] !== '') {
+                if ('' !== $row[$item_name]) {
                     $insert_his_sql .= ', NULL';
                 } else {
                     $insert_his_sql .= ", '" . $row[$item_name] . "'";
@@ -48,12 +48,12 @@ if ($op == 'delete') {
             $xoopsDB->query($insert_his_sql);
 
             foreach ($item_defs as $item_name => $item_def) {
-                if ($item_def['type'] == 'file' || $item_def['type'] == 'image') {
+                if ('file' == $item_def['type'] || 'image' == $item_def['type']) {
                     @unlink($module_upload_dir . '/' . getRealFileName($did, $item_name, $row[$item_name]));
                 }
             }
 
-            $extra_tags = array('DID' => $did);
+            $extra_tags = ['DID' => $did];
             $notification_handler = xoops_gethandler('notification');
             $notification_handler->triggerEvent('change', $did, 'delete', $extra_tags);
             $notification_handler->unsubscribeByItem($xoopsModule->getVar('mid'), 'change', $did);

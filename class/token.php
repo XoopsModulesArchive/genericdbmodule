@@ -1,18 +1,14 @@
 <?php
 /**
- *
- * @package Legacy
  * @version $Id: token.php 10050 2012-08-11 07:19:07Z beckmi $
  * @copyright Copyright 2005-2007 XOOPS Cube Project  <http://xoopscube.sourceforge.net/>
  * @license http://xoopscube.sourceforge.net/license/GPL_V2.txt GNU GENERAL PUBLIC LICENSE Version 2
- *
  */
-
 define('XOOPS_TOKEN_TIMEOUT', 0);
 define('XOOPS_TOKEN_PREFIX', 'XOOPS_TOKEN_');
 
 if (!defined('XOOPS_SALT')) {
-    define('XOOPS_SALT', substr(md5(XOOPS_DB_PREFIX . XOOPS_DB_USER . XOOPS_ROOT_PATH), 5, 8));
+    define('XOOPS_SALT', mb_substr(md5(XOOPS_DB_PREFIX . XOOPS_DB_USER . XOOPS_ROOT_PATH), 5, 8));
 }
 
 define('XOOPS_TOKEN_SESSION_STRING', 'X2_TOKEN');
@@ -34,20 +30,16 @@ class XoopsToken
 {
     /**
      * token's name. this is used for identification.
-     * @access protected
      */
     public $_name_;
 
     /**
      * token's string for inquiry. this should be a random code for security.
-     * @access private
      */
     public $_token_;
 
     /**
      * the unixtime when this token is effective.
-     *
-     * @access protected
      */
     public $_lifetime_;
 
@@ -58,8 +50,6 @@ class XoopsToken
 
     /**
      * serial number. this used for identification of tokens of same name tokens.
-     *
-     * @access private
      */
     public $_number_ = 0;
 
@@ -82,23 +72,21 @@ class XoopsToken
         $this->_token_ = $this->_generateToken();
     }
 
-
     /**
      * Returns random string for token's string.
      *
-     * @access protected
      * @return string
      */
     public function _generateToken()
     {
-        srand(microtime() * 100000);
-        return md5(XOOPS_SALT . $this->_name_ . uniqid(rand(), true));
+        mt_srand(microtime() * 100000);
+
+        return md5(XOOPS_SALT . $this->_name_ . uniqid(mt_rand(), true));
     }
 
     /**
      * Returns this token's name.
      *
-     * @access public
      * @return string
      */
     public function getTokenName()
@@ -109,7 +97,6 @@ class XoopsToken
     /**
      * Returns this token's string.
      *
-     * @access public
      * @return  string
      */
     public function getTokenValue()
@@ -120,7 +107,6 @@ class XoopsToken
     /**
      * Set this token's serial number.
      *
-     * @access public
      * @param   $serial_number  serial number
      */
     public function setSerialNumber($serial_number)
@@ -131,7 +117,6 @@ class XoopsToken
     /**
      * Returns this token's serial number.
      *
-     * @access public
      * @return  int
      */
     public function getSerialNumber()
@@ -143,7 +128,6 @@ class XoopsToken
      * Returns hidden tag string that includes this token. you can use it
      * for <form> tag's member.
      *
-     * @access public
      * @return  string
      */
     public function getHtml()
@@ -165,6 +149,7 @@ class XoopsToken
     /**
      * If $token equals this token's string, true is returened.
      *
+     * @param null|mixed $token
      * @return  bool
      */
     public function validate($token = null)
@@ -182,16 +167,11 @@ class XoopsToken
  */
 class XoopsTokenHandler
 {
-    /**
-     * @access private
-     */
     public $_prefix = '';
-
 
     /**
      * Create XoopsToken instance, regist(keep to server), and returns it.
      *
-     * @access public
      * @param   $name   this token's name string.
      * @param   $timeout    effective time(if $timeout equal 0, this token will become unlimited)
      */
@@ -199,13 +179,13 @@ class XoopsTokenHandler
     {
         $token = new XoopsToken($name, $timeout);
         $this->register($token);
+
         return $token;
     }
 
     /**
      * Fetches from server side, and returns it.
      *
-     * @access public
      * @param   $name   token's name string.
      * @return XoopsToken
      */
@@ -215,11 +195,13 @@ class XoopsTokenHandler
         if (isset($_SESSION[XOOPS_TOKEN_SESSION_STRING][$this->_prefix . $name])) {
             $ret = unserialize($_SESSION[XOOPS_TOKEN_SESSION_STRING][$this->_prefix . $name]);
         }
+
         return $ret;
     }
 
     /**
      * Register token to session.
+     * @param mixed $token
      */
     public function register($token)
     {
@@ -228,6 +210,7 @@ class XoopsTokenHandler
 
     /**
      * Unregister token to session.
+     * @param mixed $token
      */
     public function unregister($token)
     {
@@ -238,7 +221,6 @@ class XoopsTokenHandler
      * If a token of the name that equal $name is registered on session,
      * this method will return true.
      *
-     * @access  public
      * @param   $name   token's name string.
      * @return  bool
      */
@@ -251,24 +233,24 @@ class XoopsTokenHandler
      * This method takes out token's string from Request, and validate
      * token with it. if it passed validation, this method will return true.
      *
-     * @access  public
      * @param   $token  XoopsToken
      * @param   $clearIfValid   If token passed validation, $token will be unregistered.
      * @return  bool
      */
     public function validate($token, $clearIfValid)
     {
-        $req_token = isset($_REQUEST[$token->getTokenName()]) ?
-                trim($_REQUEST[$token->getTokenName()]) : null;
+        $req_token = isset($_REQUEST[$token->getTokenName()]) ? trim($_REQUEST[$token->getTokenName()]) : null;
 
         if ($req_token) {
             if ($token->validate($req_token)) {
                 if ($clearIfValid) {
                     $this->unregister($token);
                 }
+
                 return true;
             }
         }
+
         return false;
     }
 }
@@ -280,6 +262,7 @@ class XoopsSingleTokenHandler extends XoopsTokenHandler
         if ($token = $this->fetch($name)) {
             return $this->validate($token, $clearIfValid);
         }
+
         return false;
     }
 
@@ -288,12 +271,15 @@ class XoopsSingleTokenHandler extends XoopsTokenHandler
      * This method was created for quick protection of default modules.
      * this method will be deleted in the near future.
      * @deprecated
+     * @param mixed $name
+     * @param mixed $timeout
      * @return bool
      */
     public function quickCreate($name, $timeout = XOOPS_TOKEN_TIMEOUT)
     {
-        $handler = new XoopsSingleTokenHandler();
+        $handler = new self();
         $ret = $handler->create($name, $timeout);
+
         return $ret;
     }
 
@@ -302,11 +288,14 @@ class XoopsSingleTokenHandler extends XoopsTokenHandler
      * This method was created for quick protection of default modules.
      * this method will be deleted in the near future.
      * @deprecated
+     * @param mixed $name
+     * @param mixed $clearIfValid
      * @return bool
      */
     public function quickValidate($name, $clearIfValid = true)
     {
-        $handler = new XoopsSingleTokenHandler();
+        $handler = new self();
+
         return $handler->autoValidate($name, $clearIfValid);
     }
 }
@@ -322,6 +311,7 @@ class XoopsMultiTokenHandler extends XoopsTokenHandler
         $token = new XoopsToken($name, $timeout);
         $token->setSerialNumber($this->getUniqueSerial($name));
         $this->register($token);
+
         return $token;
     }
 
@@ -331,6 +321,7 @@ class XoopsMultiTokenHandler extends XoopsTokenHandler
         if (isset($_SESSION[XOOPS_TOKEN_MULTI_SESSION_STRING][$this->_prefix . $name][$serial_number])) {
             $ret = unserialize($_SESSION[XOOPS_TOKEN_MULTI_SESSION_STRING][$this->_prefix . $name][$serial_number]);
         }
+
         return $ret;
     }
 
@@ -352,11 +343,12 @@ class XoopsMultiTokenHandler extends XoopsTokenHandler
     public function autoValidate($name, $clearIfValid = true)
     {
         $serial_number = $this->getRequestNumber($name);
-        if ($serial_number!==null) {
+        if (null !== $serial_number) {
             if ($token = $this->fetch($name, $serial_number)) {
                 return $this->validate($token, $clearIfValid);
             }
         }
+
         return false;
     }
 
@@ -365,12 +357,15 @@ class XoopsMultiTokenHandler extends XoopsTokenHandler
      * This method was created for quick protection of default modules.
      * this method will be deleted in the near future.
      * @deprecated
+     * @param mixed $name
+     * @param mixed $timeout
      * @return bool
      */
     public function quickCreate($name, $timeout = XOOPS_TOKEN_TIMEOUT)
     {
-        $handler = new XoopsMultiTokenHandler();
+        $handler = new self();
         $ret = $handler->create($name, $timeout);
+
         return $ret;
     }
 
@@ -379,11 +374,14 @@ class XoopsMultiTokenHandler extends XoopsTokenHandler
      * This method was created for quick protection of default modules.
      * this method will be deleted in the near future.
      * @deprecated
+     * @param mixed $name
+     * @param mixed $clearIfValid
      * @return bool
      */
     public function quickValidate($name, $clearIfValid = true)
     {
-        $handler = new XoopsMultiTokenHandler();
+        $handler = new self();
+
         return $handler->autoValidate($name, $clearIfValid);
     }
 
@@ -407,7 +405,9 @@ class XoopsMultiTokenHandler extends XoopsTokenHandler
     {
         if (isset($_SESSION[XOOPS_TOKEN_MULTI_SESSION_STRING][$name])) {
             if (is_array($_SESSION[XOOPS_TOKEN_MULTI_SESSION_STRING][$name])) {
-                for ($i = 0; isset($_SESSION[XOOPS_TOKEN_MULTI_SESSION_STRING][$name][$i]); ++$i);
+                for ($i = 0; isset($_SESSION[XOOPS_TOKEN_MULTI_SESSION_STRING][$name][$i]); ++$i) {
+                }
+
                 return $i;
             }
         }

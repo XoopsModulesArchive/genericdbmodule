@@ -1,7 +1,7 @@
 <?php
 
 // �ѿ�����
-$affix = strtoupper(strlen($dirname) >= 3 ? substr($dirname, 0, 3) : $dirname);
+$affix = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);
 $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
 $myts = MyTextSanitizer::getInstance();
 $module_url = XOOPS_URL . '/modules/' . $dirname . '/';
@@ -22,7 +22,7 @@ if (function_exists('mb_regex_encoding')) {
 // �⥸�塼��ΰ��������ͤ����
 $sql = "SELECT conf_name, conf_value FROM $config_tbl c, $modules_tbl m WHERE c.conf_modid=m.mid AND m.dirname='$dirname'";
 $res = $xoopsDB->query($sql);
-while (list($conf_name, $conf_value) = $xoopsDB->fetchRow($res)) {
+while ([$conf_name, $conf_value] = $xoopsDB->fetchRow($res)) {
     $conf_name = 'cfg_' . str_replace($dirname . '_', '', $conf_name);
     $$conf_name = $conf_value;
 }
@@ -41,7 +41,7 @@ if (is_object($xoopsUser)) {
     $gids = $xoopsUser->getGroups();
 } else {
     $uid = 0;
-    $gids = array(3);
+    $gids = [3];
 }
 
 // �ؿ�����ե�������ɤ߹���
@@ -51,13 +51,13 @@ require_once XOOPS_ROOT_PATH . '/modules/' . $dirname . '/include/functions.php'
 if ($cfg_auto_update) {
     $template_dir_path = XOOPS_ROOT_PATH . '/modules/' . $dirname . '/templates';
     if ($handler = @opendir($template_dir_path . '/blocks/')) {
-        while (($file = readdir($handler)) !== false) {
+        while (false !== ($file = readdir($handler))) {
             $file_path = $template_dir_path . '/blocks/' . $file;
-            if (is_file($file_path) && substr($file, -5) == '.html' && $file != 'index.html') {
+            if (is_file($file_path) && '.html' == mb_substr($file, -5) && 'index.html' != $file) {
                 $mtime = intval(@filemtime($file_path));
                 $file = $dirname . '_' . $file;
-                list($count) = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
-                if ($count == 0) {
+                [$count] = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
+                if (0 == $count) {
                     updateTemplate($xoopsConfig['template_set'], $file, implode('', file($file_path)), $mtime);
                 }
             }

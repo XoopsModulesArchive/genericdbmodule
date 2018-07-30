@@ -10,13 +10,14 @@ if (!function_exists('xgdb_notify')) {
     {
         $item['name'] = '';
         $item['url'] = '';
-        if ($category == 'change') {
+        if ('change' == $category) {
             $module_handler = xoops_gethandler('module');
-            $xoopsModule = &$module_handler->getByDirname($dirname);
+            $xoopsModule = $module_handler->getByDirname($dirname);
 
             $item['name'] = $xoopsModule->getVar('name');
             $item['url'] = XOOPS_URL . '/modules/' . $dirname . '/detail.php?did=' . intval($item_id);
         }
+
         return $item;
     }
 }

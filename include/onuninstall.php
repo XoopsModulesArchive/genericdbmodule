@@ -11,14 +11,14 @@ if (!function_exists('xgdb_onuninstall')) {
     {
         global $ret;
         if (!is_array($ret)) {
-            $ret = array();
+            $ret = [];
         }
         $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
         $mid = $module->getVar('mid');
 
         $upload_dir = opendir(XOOPS_UPLOAD_PATH . '/' . $dirname);
         while (false !== ($file = readdir($upload_dir))) {
-            if ($file == '.' || $file == '..') {
+            if ('.' == $file || '..' == $file) {
                 continue;
             }
             unlink(XOOPS_UPLOAD_PATH . "/$dirname/$file");
@@ -44,9 +44,9 @@ if (!function_exists('xgdb_onuninstall')) {
         }
 
         $tplfile_handler = xoops_gethandler('tplfile');
-        $templates = &$tplfile_handler->find(null, null, $mid);
+        $templates = $tplfile_handler->find(null, null, $mid);
         $count = count($templates);
-        if ($count > 0) {
+        if (0 < $count) {
             $ret[] = 'Deleting templates...';
             for ($i = 0; $i < $count; ++$i) {
                 if (!$tplfile_handler->delete($templates[$i])) {

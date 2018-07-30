@@ -12,7 +12,7 @@ if (!function_exists('xgdb_onupdate')) {
         global $msgs, $xoopsConfig, $xoopsUser;
         $myts = MyTextSanitizer::getInstance();
         if (!is_array($msgs)) {
-            $msgs = array();
+            $msgs = [];
         }
         $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
         $tplfile_tbl = $xoopsDB->prefix('tplfile');
@@ -29,10 +29,10 @@ if (!function_exists('xgdb_onupdate')) {
         include_once XOOPS_ROOT_PATH . '/class/template.php';
         $msgs[] = 'Updating templates...';
         if ($dir_handler = @opendir($template_dir . '/')) {
-            while (($template_file = readdir($dir_handler)) !== false) {
-                if (substr($template_file, 0, 1) == '.') {
+            while (false !== ($template_file = readdir($dir_handler))) {
+                if ('.' == mb_substr($template_file, 0, 1)) {
                     continue;
-                } elseif ($template_file == 'index.html') {
+                } elseif ('index.html' == $template_file) {
                     continue;
                 }
 
@@ -40,7 +40,7 @@ if (!function_exists('xgdb_onupdate')) {
                 $template_file_path = $template_dir . '/' . $template_file;
                 if (is_file($template_file_path)) {
                     $mtime = intval(@filemtime($template_file_path));
-                    $template = &$tplfile_handler->create();
+                    $template = $tplfile_handler->create();
                     $template->setVar('tpl_source', file_get_contents($template_file_path), true);
                     $template->setVar('tpl_refid', $mid);
                     $template->setVar('tpl_tplset', 'default');
@@ -55,7 +55,7 @@ if (!function_exists('xgdb_onupdate')) {
                     } else {
                         $template_id = $template->getVar('tpl_id');
                         $msgs[] = '&nbsp;&nbsp;Template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b> inserted to the database.';
-                        if ($xoopsConfig['template_set'] == 'default') {
+                        if ('default' == $xoopsConfig['template_set']) {
                             $error_reporting = error_reporting(0);
                             $error_reporting_result = xoops_template_touch($template_id);
                             error_reporting($error_reporting);
@@ -75,22 +75,22 @@ if (!function_exists('xgdb_onupdate')) {
         foreach ($blocks as $func_num => $block) {
             $template_dir .= '/blocks';
             $xgdb_template_file = $block['template'];
-            $template_file = substr($xgdb_template_file, strlen($dirname) + 1, strlen($xgdb_template_file));
+            $template_file = mb_substr($xgdb_template_file, mb_strlen($dirname) + 1, mb_strlen($xgdb_template_file));
             $template_file_path = "$template_dir/$template_file";
             if (file_exists($template_file_path)) {
                 $sql = "SELECT bid FROM $newblocks_tbl WHERE mid = $mid AND func_num = $func_num AND show_func = '" . addslashes($block['show_func']) . "' AND func_file = '" . addslashes($block['file']) . "'";
                 $res = $xoopsDB->query($sql);
-                list($bid) = $xoopsDB->fetchRow($res);
+                [$bid] = $xoopsDB->fetchRow($res);
                 $xoopsDB->query("UPDATE $newblocks_tbl SET template = '" . addslashes($xgdb_template_file) . "' WHERE bid = $bid");
 
                 $sql = "SELECT tpl_id FROM $tplfile_tbl WHERE tpl_tplset = 'default' AND tpl_file = '" . addslashes($xgdb_template_file) . "' AND tpl_module = '" . addslashes($dirname) . "' AND tpl_type = 'block'";
                 $res = $xoopsDB->query($sql);
-                list($tpl_id) = $xoopsDB->fetchRow($res);
+                [$tpl_id] = $xoopsDB->fetchRow($res);
                 $xoopsDB->query("DELETE FROM $tplfile_tbl WHERE tpl_id = $tpl_id");
                 $xoopsDB->query("DELETE FROM $tplsource_tbl WHERE tpl_id = $tpl_id");
 
                 $mtime = intval(@filemtime($template_file_path));
-                $template = &$tplfile_handler->create();
+                $template = $tplfile_handler->create();
                 $template->setVar('tpl_source', file_get_contents($template_file_path), true);
                 $template->setVar('tpl_refid', $bid);
                 $template->setVar('tpl_tplset', 'default');
@@ -105,7 +105,7 @@ if (!function_exists('xgdb_onupdate')) {
                     $msgs[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Could not update template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b>.</span>';
                 } else {
                     $msgs[] = '&nbsp;&nbsp;Template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b> updated.';
-                    if ($xoopsConfig['template_set'] == 'default') {
+                    if ('default' == $xoopsConfig['template_set']) {
                         $template_id = $template->getVar('tpl_id');
                         $error_reporting = error_reporting(0);
                         $error_reporting_result = xoops_template_touch($template_id);
@@ -120,20 +120,20 @@ if (!function_exists('xgdb_onupdate')) {
             }
         }
 
-        if ($prev_version < 30) {
+        if (30 > $prev_version) {
             // ���åץ?�ɥǥ��쥯�ȥ��ľ��󥯶ػ�������ɲ�
             $file = fopen(XOOPS_UPLOAD_PATH . '/' . $dirname . '/.htaccess', 'w');
             flock($file, LOCK_EX);
-            fputs($file, "order deny,allow\n");
-            fputs($file, "deny from all\n");
+            fwrite($file, "order deny,allow\n");
+            fwrite($file, "deny from all\n");
             flock($file, LOCK_UN);
             fclose($file);
 
             // ���åץ?�ɥե�����Υե�����̾��URL���󥳡��ɤ�����Τ��Ѵ�
             $res_item = $xoopsDB->query("SELECT name FROM $item_tbl WHERE type = 'file' OR type = 'image'");
-            while (list($col_name) = $xoopsDB->fetchRow($res_item)) {
+            while ([$col_name] = $xoopsDB->fetchRow($res_item)) {
                 $res_data = $xoopsDB->query("SELECT id, $col_name FROM $data_tbl WHERE $col_name IS NOT NULL AND $col_name != ''");
-                while (list($id, $file_name) = $xoopsDB->fetchRow($res_data)) {
+                while ([$id, $file_name] = $xoopsDB->fetchRow($res_data)) {
                     $real_file_name = urlencode("$id-$col_name-$file_name");
                     @copy($module_upload_dir . '/' . $file_name, $module_upload_dir . '/' . $real_file_name);
                 }
@@ -146,29 +146,29 @@ if (!function_exists('xgdb_onupdate')) {
             $xoopsDB->query("ALTER TABLE `$item_tbl` ADD `disp_cond` TINYINT(1) UNSIGNED NULL AFTER `input_desc`;");
         }
 
-        if ($prev_version < 40) {
+        if (40 > $prev_version) {
             // xgdb_item�ơ��֥��show_gids�������ɲ�
             $xoopsDB->query("ALTER TABLE `$item_tbl` ADD `show_gids` VARCHAR(255) AFTER `required`;");
 
             // xgdb_item�ơ��֥��show_gids�����˽��ǡ���������
             $res = $xoopsDB->query('SELECT groupid FROM ' . $xoopsDB->prefix('groups') . ' ORDER BY groupid ASC');
             $gidstring = '|';
-            while (list($groupid) = $xoopsDB->fetchRow($res)) {
+            while ([$groupid] = $xoopsDB->fetchRow($res)) {
                 $gidstring .= $groupid . '|';
             }
             $xoopsDB->query("UPDATE `$item_tbl` SET show_gids = '$gidstring'");
         }
 
-        if ($prev_version < 50) {
+        if (50 > $prev_version) {
             // ���ͤ��ĥƥ����ȥܥå�������type��ƥ����ȥܥå���(����)���Ѵ�
             $res_item = $xoopsDB->query("SELECT name FROM $item_tbl WHERE type = 'text' AND (value_type = 'int' OR value_type = 'float')");
-            while (list($col_name) = $xoopsDB->fetchRow($res_item)) {
+            while ([$col_name] = $xoopsDB->fetchRow($res_item)) {
                 $xoopsDB->query("UPDATE `$item_tbl` SET type = 'number' WHERE name = '" . addslashes($col_name) . "'");
             }
 
             // ʸ������ĥƥ����ȥܥå�������type��ƥ����ȥܥå���(ʸ����)���Ѵ�
             $res_item = $xoopsDB->query("SELECT name FROM $item_tbl WHERE type = 'text' AND value_type = 'string'");
-            while (list($col_name) = $xoopsDB->fetchRow($res_item)) {
+            while ([$col_name] = $xoopsDB->fetchRow($res_item)) {
                 $xoopsDB->query("UPDATE `$item_tbl` SET value_type = NULL WHERE name = '" . addslashes($col_name) . "'");
             }
 
@@ -188,7 +188,7 @@ if (!function_exists('xgdb_onupdate')) {
             $xoopsDB->query("ALTER TABLE `$item_tbl` ADD `xgdb_name` VARCHAR(255);");
 
             // ��������ơ��֥�����
-            $item_defs = array();
+            $item_defs = [];
             $res_item = $xoopsDB->query("SELECT name, type, value_type FROM $item_tbl");
             while ($item_def = $xoopsDB->fetchArray($res_item)) {
                 $item_defs[$item_def['name']] = $item_def;
@@ -202,25 +202,25 @@ if (!function_exists('xgdb_onupdate')) {
             $create_his_sql .= ', update_date DATETIME NOT NULL';
 
             foreach ($item_defs as $item_name => $item_def) {
-                if ($item_name === 'did' || $item_name === 'add_uid' || $item_name === 'add_date') {
+                if ('did' === $item_name || 'add_uid' === $item_name || 'add_date' === $item_name) {
                     continue;
                 }
 
                 $create_his_sql .= ', ' . $item_name;
 
-                if ($item_def['type'] == 'text') {
+                if ('text' == $item_def['type']) {
                     $create_his_sql .= ' VARCHAR(255)';
-                } elseif ($item_def['type'] == 'tarea' || $item_def['type'] == 'xtarea') {
+                } elseif ('tarea' == $item_def['type'] || 'xtarea' == $item_def['type']) {
                     $create_his_sql .= ' TEXT';
-                } elseif ($item_def['type'] == 'file' || $item_def['type'] == 'image') {
+                } elseif ('file' == $item_def['type'] || 'image' == $item_def['type']) {
                     $create_his_sql .= ' VARCHAR(255)';
-                } elseif (isset($item_def['value_type']) && $item_def['value_type'] == 'string') {
+                } elseif (isset($item_def['value_type']) && 'string' == $item_def['value_type']) {
                     $create_his_sql .= ' VARCHAR(255)';
-                } elseif (isset($item_def['value_type']) && $item_def['value_type'] == 'int') {
+                } elseif (isset($item_def['value_type']) && 'int' == $item_def['value_type']) {
                     $create_his_sql .= ' INT';
-                } elseif (isset($item_def['value_type']) && $item_def['value_type'] == 'float') {
+                } elseif (isset($item_def['value_type']) && 'float' == $item_def['value_type']) {
                     $create_his_sql .= ' FLOAT';
-                } elseif ($item_def['type'] == 'date') {
+                } elseif ('date' == $item_def['type']) {
                     $create_his_sql .= ' DATE';
                 }
             }
@@ -243,7 +243,7 @@ if (!function_exists('xgdb_onupdate')) {
                 $his_insert_sql .= ", '" . $row_data['add_date'] . "'";
 
                 foreach ($item_defs as $item_def) {
-                    if ($row_data[$item_name] === '') {
+                    if ('' === $row_data[$item_name]) {
                         $his_insert_sql .= ', NULL';
                     } else {
                         $his_insert_sql .= ", '" . $row_data[$item_name] . "'";

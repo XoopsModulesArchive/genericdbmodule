@@ -26,7 +26,7 @@ $xoopsTpl->assign('op', $myts->htmlSpecialChars($op));
 $hid = isset($_GET['hid']) ? intval($_GET['hid']) : 0;
 $his_sql = "SELECT h.*, u.uname FROM $his_tbl AS h LEFT OUTER JOIN $users_tbl AS u ON h.update_uid = u.uid WHERE h.hid = $hid";
 $his_res = $xoopsDB->query($his_sql);
-if ($xoopsDB->getRowsNum($his_res) == 0) {
+if (0 == $xoopsDB->getRowsNum($his_res)) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_NO_ERR_MSG'));
 }
 
@@ -43,7 +43,7 @@ assignDetail($his_row, $item_defs, $dirname);
 $xoopsTpl->assign('item_defs', $item_defs);
 
 // 操作が更新の場合、変更前の内容を割り当て
-if ($operation_raw == 'update') {
+if ('update' == $operation_raw) {
     $bef_his_sql = 'SELECT h.*, u.uname ';
     $bef_his_sql .= "FROM $his_tbl AS h LEFT OUTER JOIN $users_tbl AS u ON h.update_uid = u.uid ";
     $bef_his_sql .= "WHERE h.did = $did AND h.hid < $hid ";

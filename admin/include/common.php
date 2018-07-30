@@ -6,7 +6,7 @@ require_once 'functions.php';
 
 // 変数を初期化
 $dirname = basename(dirname(dirname(__DIR__)));
-$affix = strtoupper(strlen($dirname) >= 3 ? substr($dirname, 0, 3) : $dirname);
+$affix = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);
 $myts = MyTextSanitizer::getInstance();
 $data_tbl = $xoopsDB->prefix($dirname . '_xgdb_data');
 $his_tbl = $xoopsDB->prefix($dirname . '_xgdb_his');
@@ -18,22 +18,22 @@ $original_theme_fromfile = $xoopsConfig['theme_fromfile'];
 $xoopsConfig['theme_fromfile'] = 1;
 $xoopsTpl = new XoopsTpl();
 $xoopsConfig['theme_fromfile'] = $original_theme_fromfile;
-$types = array(
-        'text'    => getAMConst('_TYPE_TEXT'),
-        'number'  => getAMConst('_TYPE_NUM'),
-        'cbox'    => getAMConst('_TYPE_CBOX'),
-        'radio'   => getAMConst('_TYPE_RADIO'),
-        'select'  => getAMConst('_TYPE_SELECT'),
+$types = [
+        'text' => getAMConst('_TYPE_TEXT'),
+        'number' => getAMConst('_TYPE_NUM'),
+        'cbox' => getAMConst('_TYPE_CBOX'),
+        'radio' => getAMConst('_TYPE_RADIO'),
+        'select' => getAMConst('_TYPE_SELECT'),
         'mselect' => getAMConst('_TYPE_MSELECT'),
-        'tarea'   => getAMConst('_TYPE_TAREA'),
-        'xtarea'  => getAMConst('_TYPE_XTAREA'),
-        'file'    => getAMConst('_TYPE_FILE'),
-        'image'   => getAMConst('_TYPE_IMAGE'),
-        'date'    => getAMConst('_TYPE_DATE'));
-$value_types = array(
+        'tarea' => getAMConst('_TYPE_TAREA'),
+        'xtarea' => getAMConst('_TYPE_XTAREA'),
+        'file' => getAMConst('_TYPE_FILE'),
+        'image' => getAMConst('_TYPE_IMAGE'),
+        'date' => getAMConst('_TYPE_DATE'), ];
+$value_types = [
         'string' => getAMConst('_STRING'),
-        'int'    => getAMConst('_INTEGER'),
-        'float'  => getAMConst('_FLOAT'));
+        'int' => getAMConst('_INTEGER'),
+        'float' => getAMConst('_FLOAT'), ];
 
 if (function_exists('mb_language')) {
     mb_language(_LANGCODE);

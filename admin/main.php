@@ -3,7 +3,7 @@
 require_once '../../../include/cp_header.php';
 require_once './include/common.php';
 
-$errors = array();
+$errors = [];
 if (!extension_loaded('mbstring')) {
     $errors[] = getAMConst('_MBSTRING_DISABLE_ERR');
 }
@@ -18,10 +18,10 @@ if (!extension_loaded('gd')) {
 
 xoops_cp_header();
 
-$items = array();
+$items = [];
 $res = $xoopsDB->query("SELECT * FROM $item_tbl ORDER BY `sequence` ASC, `iid` ASC");
 while ($row = $xoopsDB->fetchArray($res)) {
-    $item = array();
+    $item = [];
     $item['iid'] = $row['iid'];
     $item['name'] = $myts->htmlSpecialChars($row['name']);
     $item['caption'] = $myts->htmlSpecialChars($row['caption']);
@@ -39,7 +39,7 @@ while ($row = $xoopsDB->fetchArray($res)) {
 }
 $xoopsTpl->assign('items', $items);
 
-$type_item_def = array('options' => array_flip($types), 'type' => 'select', 'value_type' => 'string');
+$type_item_def = ['options' => array_flip($types), 'type' => 'select', 'value_type' => 'string'];
 $item_add_msg = sprintf($admin_consts['_ITEM_ADD_MSG'], makeSelectForm('type', $type_item_def, ''));
 $xoopsTpl->assign('item_add_msg', $item_add_msg);
 $xoopsTpl->assign('errors', $errors);
@@ -62,10 +62,6 @@ $xoopsTpl->assign('_ADD', getAMConst('_ADD'));
 $xoopsTpl->assign('_DUPLICATE', getAMConst('_DUPLICATE'));
 $xoopsTpl->assign('_OPERATION', getAMConst('_OPERATION'));
 $xoopsTpl->assign('_YES_MARK', getAMConst('_YES_MARK'));
-
-
-
-
 
 $xoopsTpl->display(XOOPS_ROOT_PATH . '/modules/' . $dirname . '/templates/admin/xgdb_admin_index.html');
 

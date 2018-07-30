@@ -21,8 +21,8 @@ if (!function_exists('xgdb_oninstall')) {
         $file = fopen(XOOPS_UPLOAD_PATH . '/' . $dirname . '/.htaccess', 'w');
         flock($file, LOCK_EX);
         //        fputs($file, 'SetEnvIf Referer "^' . XOOPS_URL . "/modules/" . $dirname . '/(.+\.php)?" ref_ok' . "\n");
-        fputs($file, "order deny,allow\n");
-        fputs($file, "deny from all\n");
+        fwrite($file, "order deny,allow\n");
+        fwrite($file, "deny from all\n");
         //        fputs($file, "allow from env=ref_ok\n");
         flock($file, LOCK_UN);
         fclose($file);
@@ -35,7 +35,7 @@ if (!function_exists('xgdb_oninstall')) {
             $sql_query = fread(fopen($sql_file_path, 'r'), filesize($sql_file_path));
             $sql_query = trim($sql_query);
             SqlUtility::splitMySqlFile($pieces, $sql_query);
-            $created_tables = array();
+            $created_tables = [];
             $error = false;
             foreach ($pieces as $piece) {
                 $prefixed_query = SqlUtility::prefixQuery($piece, $prefix);
@@ -48,20 +48,19 @@ if (!function_exists('xgdb_oninstall')) {
                     $ret[] = $myts->htmlSpecialChars($xoopsDB->error());
                     $error = true;
                     break;
+                }
+                if (!in_array($prefixed_query[4], $created_tables, true)) {
+                    $ret[] = '&nbsp;&nbsp;Table <b>' . $myts->htmlSpecialChars($prefix . '_' . $prefixed_query[4]) . '</b> created.<br />';
+                    $created_tables[] = $prefixed_query[4];
                 } else {
-                    if (!in_array($prefixed_query[4], $created_tables)) {
-                        $ret[] = '&nbsp;&nbsp;Table <b>' . $myts->htmlSpecialChars($prefix . '_' . $prefixed_query[4]) . '</b> created.<br />';
-                        $created_tables[] = $prefixed_query[4];
-                    } else {
-                        $ret[] = '&nbsp;&nbsp;Data inserted to table <b>' . $myts->htmlSpecialChars($prefix . '_' . $prefixed_query[4]) . '</b>.<br />';
-                    }
+                    $ret[] = '&nbsp;&nbsp;Data inserted to table <b>' . $myts->htmlSpecialChars($prefix . '_' . $prefixed_query[4]) . '</b>.<br />';
                 }
             }
         }
 
         $res = $xoopsDB->query('SELECT groupid FROM ' . $xoopsDB->prefix('groups') . ' ORDER BY groupid ASC');
         $gidstring = '|';
-        while (list($groupid) = $xoopsDB->fetchRow($res)) {
+        while ([$groupid] = $xoopsDB->fetchRow($res)) {
             $gidstring .= $groupid . '|';
         }
         $xoopsDB->query("UPDATE `$prefix" . "_xgdb_item` SET show_gids = '$gidstring'");
@@ -70,10 +69,10 @@ if (!function_exists('xgdb_oninstall')) {
         $template_dir = XOOPS_ROOT_PATH . '/modules/' . $dirname . '/templates';
         if ($dir_handler = @opendir($template_dir . '/')) {
             $ret[] = 'Adding templates...<br />';
-            while (($template_file = readdir($dir_handler)) !== false) {
-                if (substr($template_file, 0, 1) == '.') {
+            while (false !== ($template_file = readdir($dir_handler))) {
+                if ('.' == mb_substr($template_file, 0, 1)) {
                     continue;
-                } elseif ($template_file == 'index.html') {
+                } elseif ('index.html' == $template_file) {
                     continue;
                 }
 
@@ -81,7 +80,7 @@ if (!function_exists('xgdb_oninstall')) {
                 $template_file_path = $template_dir . '/' . $template_file;
                 if (is_file($template_file_path)) {
                     $mtime = intval(@filemtime($template_file_path));
-                    $template = &$tplfile_handler->create();
+                    $template = $tplfile_handler->create();
                     $template->setVar('tpl_source', file_get_contents($template_file_path), true);
                     $template->setVar('tpl_refid', $mid);
                     $template->setVar('tpl_tplset', 'default');
@@ -115,22 +114,22 @@ if (!function_exists('xgdb_oninstall')) {
         foreach ($blocks as $func_num => $block) {
             $template_dir .= '/blocks';
             $xgdb_template_file = $block['template'];
-            $template_file = substr($xgdb_template_file, strlen($dirname) + 1, strlen($xgdb_template_file));
+            $template_file = mb_substr($xgdb_template_file, mb_strlen($dirname) + 1, mb_strlen($xgdb_template_file));
             $template_file_path = "$template_dir/$template_file";
             if (file_exists($template_file_path)) {
                 $sql = "SELECT bid FROM $newblocks_tbl WHERE mid = $mid AND func_num = $func_num AND show_func = '" . addslashes($block['show_func']) . "' AND func_file = '" . addslashes($block['file']) . "'";
                 $res = $xoopsDB->query($sql);
-                list($bid) = $xoopsDB->fetchRow($res);
+                [$bid] = $xoopsDB->fetchRow($res);
                 $xoopsDB->query("UPDATE $newblocks_tbl SET template = '" . addslashes($xgdb_template_file) . "' WHERE bid = $bid");
 
                 $sql = "SELECT tpl_id FROM $tplfile_tbl WHERE tpl_tplset = 'default' AND tpl_file = '" . addslashes($xgdb_template_file) . "' AND tpl_module = '" . addslashes($dirname) . "' AND tpl_type = 'block'";
                 $res = $xoopsDB->query($sql);
-                list($tpl_id) = $xoopsDB->fetchRow($res);
+                [$tpl_id] = $xoopsDB->fetchRow($res);
                 $xoopsDB->query("DELETE FROM $tplfile_tbl WHERE tpl_id = $tpl_id");
                 $xoopsDB->query("DELETE FROM $tplsource_tbl WHERE tpl_id = $tpl_id");
 
                 $mtime = intval(@filemtime($template_file_path));
-                $template = &$tplfile_handler->create();
+                $template = $tplfile_handler->create();
                 $template->setVar('tpl_source', file_get_contents($template_file_path), true);
                 $template->setVar('tpl_refid', $bid);
                 $template->setVar('tpl_tplset', 'default');
@@ -158,7 +157,7 @@ if (!function_exists('xgdb_oninstall')) {
             }
         }
 
-        $affix = strtoupper(strlen($dirname) >= 3 ? substr($dirname, 0, 3) : $dirname);
+        $affix = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);
         if (!extension_loaded('mbstring')) {
             $ret[] = '<font color="red">' . constant('_MI_' . $affix . '_MBSTRING_DISABLE_ERR') . '</font>';
         }
@@ -177,7 +176,7 @@ if (!function_exists('xgdb_oninstall')) {
     /**
      * GD(gif��jpeg��png)�򥵥ݡ��Ȥ��Ƥ��뤫�ɤ������֤�.
      *
-     * @return Boolean GD(gif��jpeg��png)�򥵥ݡ��Ȥ��Ƥ������true
+     * @return bool GD(gif��jpeg��png)�򥵥ݡ��Ȥ��Ƥ������true
      */
     function checkGDSupport()
     {

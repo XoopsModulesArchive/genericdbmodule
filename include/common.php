@@ -2,7 +2,7 @@
 
 // 変数を初期化
 $dirname = basename(dirname(__DIR__));
-$affix = strtoupper(strlen($dirname) >= 3 ? substr($dirname, 0, 3) : $dirname);
+$affix = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);
 $myts = MyTextSanitizer::getInstance();
 $module_url = XOOPS_URL . '/modules/' . $dirname;
 $module_upload_url = XOOPS_UPLOAD_URL . '/' . $dirname;
@@ -40,7 +40,7 @@ if (is_object($xoopsUser)) {
     $gids = $xoopsUser->getGroups();
 } else {
     $uid = 0;
-    $gids = array(3);
+    $gids = [3];
 }
 
 // 関数定義ファイルを読み込み
@@ -51,13 +51,13 @@ require_once XOOPS_ROOT_PATH . '/modules/' . $dirname . '/include/functions.php'
 if ($cfg_auto_update) {
     $template_dir_path = XOOPS_ROOT_PATH . '/modules/' . $dirname . '/templates';
     if ($handler = @opendir($template_dir_path . '/')) {
-        while (($file = readdir($handler)) !== false) {
+        while (false !== ($file = readdir($handler))) {
             $file_path = $template_dir_path . '/' . $file;
-            if (is_file($file_path) && substr($file, -5) == '.html' && $file != 'index.html') {
+            if (is_file($file_path) && '.html' == mb_substr($file, -5) && 'index.html' != $file) {
                 $mtime = intval(@filemtime($file_path));
                 $file = $dirname . '_' . $file;
-                list($count) = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
-                if ($count == 0) {
+                [$count] = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
+                if (0 == $count) {
                     updateTemplate($xoopsConfig['template_set'], $file, implode('', file($file_path)), $mtime);
                 }
             }
@@ -65,13 +65,13 @@ if ($cfg_auto_update) {
     }
 
     if ($handler = @opendir($template_dir_path . '/blocks/')) {
-        while (($file = readdir($handler)) !== false) {
+        while (false !== ($file = readdir($handler))) {
             $file_path = $template_dir_path . '/blocks/' . $file;
-            if (is_file($file_path) && substr($file, -5) == '.html' && $file != 'index.html') {
+            if (is_file($file_path) && '.html' == mb_substr($file, -5) && 'index.html' != $file) {
                 $mtime = intval(@filemtime($file_path));
                 $file = $dirname . '_' . $file;
-                list($count) = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
-                if ($count == 0) {
+                [$count] = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
+                if (0 == $count) {
                     updateTemplate($xoopsConfig['template_set'], $file, implode('', file($file_path)), $mtime);
                 }
             }

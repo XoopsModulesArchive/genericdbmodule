@@ -6,26 +6,26 @@ require_once '../class/token.php';
 
 $op = isset($_POST['op']) ? $_POST['op'] : '';
 $iid = isset($_POST['iid']) ? intval($_POST['iid']) : 0;
-if ($iid == '') {
+if ('' == $iid) {
     $iid = isset($_GET['iid']) ? intval($_GET['iid']) : 0;
 }
 if (isset($_POST['cancel'])) {
     header('Location: ' . $module_url . '/admin/detail.php?iid=' . $iid);
 }
 
-if ($iid < 1) {
+if (1 > $iid) {
     redirect_header($module_url . '/admin/index.php', 5, getAMConst('_NO_ERR_MSG'));
 }
 $res = $xoopsDB->query("SELECT * FROM $item_tbl WHERE iid = $iid");
-if ($xoopsDB->getRowsNum($res) == 0) {
+if (0 == $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/admin/index.php', 5, getAMConst('_NO_ERR_MSG'));
 }
 $row = $xoopsDB->fetchArray($res);
 
-$errors = array();
+$errors = [];
 $item_defs = getAdminItemDefs($row['type']);
 
-if ($op == 'update') {
+if ('update' == $op) {
     // トークンチェック
     if (!XoopsMultiTokenHandler::quickValidate($dirname . '_update')) {
         $errors[] = getAMConst('_TOKEN_ERR_MSG');
@@ -33,15 +33,15 @@ if ($op == 'update') {
 
     foreach ($item_defs as $item_name => $item_def) {
         $$item_name = '';
-        if ($item_name == 'name' || $item_name == 'type' || $item_name == 'value_type') {
+        if ('name' == $item_name || 'type' == $item_name || 'value_type' == $item_name) {
             $$item_name = $row[$item_name];
         } else {
-            if (isset($_POST[$item_name]) && $_POST[$item_name] !== '') {
+            if (isset($_POST[$item_name]) && '' !== $_POST[$item_name]) {
                 $$item_name = $_POST[$item_name];
-                if ($item_def['type'] == 'number' && isset($item_def['value_range_min']) && $$item_name < $item_def['value_range_min']) {
+                if ('number' == $item_def['type'] && isset($item_def['value_range_min']) && $$item_name < $item_def['value_range_min']) {
                     $errors[] = sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
                     $item_defs[$item_name]['error'] = '<br />' . sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
-                } elseif ($item_def['type'] == 'number' && isset($item_def['value_range_max']) && $$item_name > $item_def['value_range_max']) {
+                } elseif ('number' == $item_def['type'] && isset($item_def['value_range_max']) && $$item_name > $item_def['value_range_max']) {
                     $errors[] = sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
                     $item_defs[$item_name]['error'] = '<br />' . sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
                 }
@@ -54,21 +54,21 @@ if ($op == 'update') {
         }
     }
 
-    if (count($errors) == 0) {
+    if (0 == count($errors)) {
         $sql = "UPDATE $item_tbl SET ";
         foreach ($item_defs as $item_name => $item_def) {
-            if ($item_name == 'name') {
+            if ('name' == $item_name) {
                 continue;
             }
-            if ($$item_name === '') {
+            if ('' === $$item_name) {
                 $sql .= '`' . addslashes($item_name) . '` = NULL, ';
-            } elseif ($item_name == 'show_gids') {
+            } elseif ('show_gids' == $item_name) {
                 $sql .= '`' . addslashes($item_name) . "` = '|" . addslashes(array2string($$item_name)) . "|', ";
             } else {
                 $sql .= '`' . addslashes($item_name) . "` = '" . addslashes($$item_name) . "', ";
             }
         }
-        $sql = substr($sql, 0, -2);
+        $sql = mb_substr($sql, 0, -2);
         $sql .= " WHERE iid = $iid";
         if ($xoopsDB->query($sql)) {
             redirect_header($module_url . '/admin/detail.php?iid=' . $iid, 5, getAMConst('_UPDATE_MSG'));
@@ -84,28 +84,28 @@ if ($op == 'update') {
 xoops_cp_header();
 
 foreach ($item_defs as $item_name => $item_def) {
-    if ($item_name == 'name') {
+    if ('name' == $item_name) {
         $item_defs[$item_name]['required'] = false;
         $item_defs[$item_name]['value'] = $myts->htmlSpecialChars($$item_name);
-    } elseif ($item_name == 'type') {
+    } elseif ('type' == $item_name) {
         $item_defs[$item_name]['required'] = false;
         $item_defs[$item_name]['value'] = $types[$$item_name];
-    } elseif ($item_name == 'value_type') {
+    } elseif ('value_type' == $item_name) {
         $item_defs[$item_name]['required'] = false;
         $item_defs[$item_name]['value'] = $value_types[$$item_name];
-    } elseif ($item_def['type'] == 'text' || $item_def['type'] == 'number') {
+    } elseif ('text' == $item_def['type'] || 'number' == $item_def['type']) {
         $item_defs[$item_name]['value'] = makeTextForm($item_name, $item_def, $$item_name);
-    } elseif ($item_def['type'] == 'cbox') {
+    } elseif ('cbox' == $item_def['type']) {
         $item_defs[$item_name]['value'] = makeCboxForm($item_name, $item_def, $$item_name);
-    } elseif ($item_def['type'] == 'radio') {
+    } elseif ('radio' == $item_def['type']) {
         $item_defs[$item_name]['value'] = makeRadioForm($item_name, $item_def, $$item_name);
-    } elseif ($item_def['type'] == 'select') {
+    } elseif ('select' == $item_def['type']) {
         $item_defs[$item_name]['value'] = makeSelectForm($item_name, $item_def, $$item_name);
-    } elseif ($item_def['type'] == 'mselect') {
+    } elseif ('mselect' == $item_def['type']) {
         $item_defs[$item_name]['value'] = makeMSelectForm($item_name, $item_def, $$item_name);
-    } elseif ($item_def['type'] == 'tarea') {
+    } elseif ('tarea' == $item_def['type']) {
         $item_defs[$item_name]['value'] = makeTAreaForm($item_name, $item_def, $$item_name);
-    } elseif ($item_def['type'] == 'xtarea') {
+    } elseif ('xtarea' == $item_def['type']) {
         $item_defs[$item_name]['value'] = makeXTAreaForm($item_name, $item_def, $$item_name);
     }
 }

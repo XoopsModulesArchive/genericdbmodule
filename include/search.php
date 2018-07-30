@@ -14,15 +14,15 @@ if (!function_exists('xgdb_search')) {
         $myts = MyTextSanitizer::getInstance();
         $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
         $data_tbl = $xoopsDB->prefix($dirname . '_xgdb_data');
-        $ret = array();
+        $ret = [];
 
         $module_handler = xoops_gethandler('module');
-        $xoopsModule = &$module_handler->getByDirname($dirname);
+        $xoopsModule = $module_handler->getByDirname($dirname);
 
         if (is_object($xoopsUser)) {
             $gids = $xoopsUser->getGroups();
         } else {
-            $gids = array(3);
+            $gids = [3];
         }
 
         $item_defs = getItemDefs($dirname, $gids);
@@ -34,41 +34,41 @@ if (!function_exists('xgdb_search')) {
             $_GET = array_map('stripSlashesDeep', $_GET);
         }
 
-        $andor = strtoupper($andor);
-        if ($andor != 'AND' && $andor != 'OR' && $andor != 'EXACT') {
+        $andor = mb_strtoupper($andor);
+        if ('AND' != $andor && 'OR' != $andor && 'EXACT' != $andor) {
             $andor = 'AND';
         }
         $userid = intval($userid);
 
-        $wheres = array();
+        $wheres = [];
         if (is_array($keywords)) {
             foreach ($keywords as $keyword) {
                 $where = '(';
                 foreach ($site_search_defs as $item_name => $item_def) {
-                    if ($item_def['type'] == 'date') {
-                        if (strtotime($keyword) !== false) {
+                    if ('date' == $item_def['type']) {
+                        if (false !== strtotime($keyword)) {
                             $where .= $item_name . " = '" . addslashes($keyword) . "' OR ";
                         }
                     } else {
                         $where .= $item_name . " LIKE '%" . addslashes($keyword) . "%' OR ";
                     }
                 }
-                $wheres[] = substr($where, 0, -4) . ')';
+                $wheres[] = mb_substr($where, 0, -4) . ')';
             }
         }
 
         $sql = 'SELECT did, add_date, add_uid FROM ' . $xoopsDB->prefix($dirname . '_xgdb_data');
-        if (count($wheres) > 0 || $userid > 0) {
+        if (0 < count($wheres) || 0 < $userid) {
             $sql .= ' WHERE ';
         }
         foreach ($wheres as $where) {
             $sql .= $where . ' ' . $andor . ' ';
         }
-        if (count($wheres) > 0) {
-            $sql = substr($sql, 0, -1 * (strlen($andor) + 2));
+        if (0 < count($wheres)) {
+            $sql = mb_substr($sql, 0, -1 * (mb_strlen($andor) + 2));
         }
-        if ($userid > 0) {
-            if (count($wheres) > 0) {
+        if (0 < $userid) {
+            if (0 < count($wheres)) {
                 $sql .= ' AND ';
             }
             $sql .= " add_uid = $userid";
@@ -76,9 +76,10 @@ if (!function_exists('xgdb_search')) {
         $sql .= ' ORDER BY did DESC';
 
         $res = $xoopsDB->query($sql, $limit, $offset);
-        while (list($did, $add_date, $add_uid) = $xoopsDB->fetchRow($res)) {
-            $ret[] = array('link' => "detail.php?did=$did", 'title' => $xoopsModule->getVar('name'), 'time' => strtotime($add_date), 'uid' => $add_uid);
+        while ([$did, $add_date, $add_uid] = $xoopsDB->fetchRow($res)) {
+            $ret[] = ['link' => "detail.php?did=$did", 'title' => $xoopsModule->getVar('name'), 'time' => strtotime($add_date), 'uid' => $add_uid];
         }
+
         return $ret;
     }
 }

@@ -15,12 +15,12 @@ if ($uid && !checkPerm($gids, $cfg_add_gids)) {
 
 $op = isset($_POST['op']) ? $_POST['op'] : '';
 
-$errors = array();
-$uploaded_file_defs = array();
-$upload_file_names = array();
+$errors = [];
+$uploaded_file_defs = [];
+$upload_file_names = [];
 
 // 登録処理
-if ($op == 'add') {
+if ('add' == $op) {
     // トークンチェック
     if (!XoopsMultiTokenHandler::quickValidate($dirname . '_add')) {
         $errors[] = getMDConst('_TOKEN_ERR_MSG');
@@ -33,14 +33,14 @@ if ($op == 'add') {
 
     // 重複チェック
     $dup_item_defs = getDefs($item_defs, 'duplicate');
-    if (count($dup_item_defs) > 0) {
+    if (0 < count($dup_item_defs)) {
         foreach ($dup_item_defs as $item_name => $item_def) {
             checkDuplicate($$item_name, $item_name, $update_item_defs, $errors);
         }
     }
 
     // エラーなしの場合、登録処理
-    if (count($errors) == 0) {
+    if (0 == count($errors)) {
         $datetime = date('Y-m-d H:i:s');
 
         $insert_data_sql = "INSERT INTO $data_tbl (add_uid, add_date, ";
@@ -49,16 +49,16 @@ if ($op == 'add') {
             $insert_data_sql .= $item_name . ', ';
             $insert_his_sql .= $item_name . ', ';
         }
-        $insert_data_sql = substr($insert_data_sql, 0, -2) . ') VALUES(';
-        $insert_his_sql = substr($insert_his_sql, 0, -2) . ') VALUES(';
+        $insert_data_sql = mb_substr($insert_data_sql, 0, -2) . ') VALUES(';
+        $insert_his_sql = mb_substr($insert_his_sql, 0, -2) . ') VALUES(';
         $insert_data_sql .= "$uid, '$datetime', ";
         $insert_his_sql .= "%d, 'add', $uid, '$datetime', ";
         foreach ($item_defs as $item_name => $item_def) {
-            if (($item_def['type'] == 'cbox' || $item_def['type'] == 'mselect') && is_array($$item_name)) {
+            if (('cbox' == $item_def['type'] || 'mselect' == $item_def['type']) && is_array($$item_name)) {
                 $insert_data_sql .= "'" . addslashes(array2string($$item_name)) . "', ";
                 $insert_his_sql .= "'" . addslashes(array2string($$item_name)) . "', ";
             } else {
-                if ($$item_name === '') {
+                if ('' === $$item_name) {
                     $insert_data_sql .= 'NULL, ';
                     $insert_his_sql .= 'NULL, ';
                 } else {
@@ -67,8 +67,8 @@ if ($op == 'add') {
                 }
             }
         }
-        $insert_data_sql = substr($insert_data_sql, 0, -2) . ')';
-        $insert_his_sql = substr($insert_his_sql, 0, -2) . ')';
+        $insert_data_sql = mb_substr($insert_data_sql, 0, -2) . ')';
+        $insert_his_sql = mb_substr($insert_his_sql, 0, -2) . ')';
 
         // 登録SQL処理成功の場合
         if ($xoopsDB->query($insert_data_sql)) {
@@ -79,7 +79,7 @@ if ($op == 'add') {
             $xoopsDB->query($insert_his_sql);
 
             // ファイル、画像がある場合
-            if (count($uploaded_file_defs) > 0) {
+            if (0 < count($uploaded_file_defs)) {
                 $update_sql = "UPDATE $data_tbl SET ";
                 foreach ($uploaded_file_defs as $item_name => $item_def) {
                     $file_name = $_FILES[$item_name]['name'];
@@ -89,17 +89,16 @@ if ($op == 'add') {
                         $errors[] = sprintf(getMDConst('_FILE_TYPE_ERR_MSG'), $myts->htmlSpecialChars($_FILES[$item_name]['type']), $item_def['caption']);
                         $item_defs[$item_name]['error'] = '<br />' . sprintf(getMDConst('_FILE_TYPE_ERR_MSG'), $myts->htmlSpecialChars($_FILES[$item_name]['type']), $item_def['caption']);
                         break;
-                    } else {
-                        $upload_file_names[] = $enc_file_name;
-                        if ($item_def['type'] == 'image') {
-                            resizeImage($module_upload_dir . '/' . $enc_file_name, $item_def['max_image_size']);
-                        }
+                    }
+                    $upload_file_names[] = $enc_file_name;
+                    if ('image' == $item_def['type']) {
+                        resizeImage($module_upload_dir . '/' . $enc_file_name, $item_def['max_image_size']);
                     }
                 }
 
                 // ファイル関係の処理でエラーなしの場合
-                if (count($errors) == 0) {
-                    $update_sql = substr($update_sql, 0, -2) . " WHERE did = $did";
+                if (0 == count($errors)) {
+                    $update_sql = mb_substr($update_sql, 0, -2) . " WHERE did = $did";
                     if (!$xoopsDB->query($update_sql)) {
                         $xoopsDB->query("DELETE FROM $main_tbl WHERE did = $did");
                     }
@@ -112,7 +111,7 @@ if ($op == 'add') {
             }
 
             // 詳細画面へリダイレクト
-            $extra_tags = array('DID' => $did);
+            $extra_tags = ['DID' => $did];
             $notification_handler = xoops_gethandler('notification');
             $notification_handler->triggerEvent('global', 0, 'add', $extra_tags);
 

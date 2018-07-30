@@ -12,12 +12,10 @@
 /**
  * @copyright    The XOOPS Project http://sourceforge.net/projects/xoops/
  * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
- * @package
  * @since
  * @author     XOOPS Development Team
  * @version    $Id $
  */
-
 $path = dirname(dirname(dirname(__DIR__)));
 include_once $path . '/mainfile.php';
 include_once $path . '/include/cp_functions.php';
