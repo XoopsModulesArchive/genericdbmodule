@@ -1,0 +1,6 @@
+Credits
+===============
+
+Originally developed by t.kishimoto from Japan
+
+Version 0.6 was updated to XOOPS 2.5.6 Standard GUI by Michael Beck (Mamba)
