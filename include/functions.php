@@ -775,9 +775,9 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
     /**
      * Sanitize and return the argument value according to the content of the item information.
      *
-     * @param String  $value         Value to be sanitized
-     * @param Array   $item_def      Project information
-     * @param Boolean $number_format Numeric format format
+     * @param string|null $value         Value to be sanitized
+     * @param array       $item_def      Project information
+     * @param boolean     $number_format Numeric format format
      *
      * @return String Sanitized argument value
      */
@@ -1180,15 +1180,15 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
             return false;
         }
 
-        /**
-         * Check for duplicate records.
-         *
-         * @param String  $value     The value to check
-         * @param String  $item_name Item name
-         * @param Array  &$item_defs Array of item definition information
-         * @param Array  &$errors     Array of error messages
-         * @param int     $did       Data ID to exclude
-         */
+    /**
+     * Check for duplicate records.
+     *
+     * @param array|string $value     The value to check
+     * @param String       $item_name Item name
+     * @param Array        $item_defs Array of item definition information
+     * @param Array        $errors    Array of error messages
+     * @param int          $did       Data ID to exclude
+     */
         function checkDuplicate($value, $item_name, &$item_defs, &$errors, $did = 0)
         {
             global $data_tbl;

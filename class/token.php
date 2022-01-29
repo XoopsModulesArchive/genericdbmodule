@@ -232,8 +232,8 @@ class XoopsTokenHandler
      * token with it. if it passed validation, this method will return true.
      *
      * @param XoopsToken $token
-     * @param If         $clearIfValid token passed validation, $token will be unregistered.
-     * @return  bool
+     * @param bool       $clearIfValid if token passed validation, $token will be unregistered.
+     * @return bool
      */
     public function validate($token, $clearIfValid)
     {
