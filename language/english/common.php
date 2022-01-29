@@ -1,10 +1,11 @@
 <?php
 
 $common_consts = [
-        '_COMMA' => ', ',
-        '_NOT_SELECTED' => 'Not Selected',
-        '_MORE_THAN' => 'And Over',
-        '_LESS_THAN' => 'Or Less', ];
+    '_COMMA'        => ', ',
+    '_NOT_SELECTED' => 'Not Selected',
+    '_MORE_THAN'    => 'And Over',
+    '_LESS_THAN'    => 'Or Less',
+];
 
 foreach ($common_consts as $key => $value) {
     if (!defined('_' . $affix . $key)) {

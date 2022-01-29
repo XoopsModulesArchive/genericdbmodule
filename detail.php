@@ -1,25 +1,25 @@
 <?php
 
-require_once '../../mainfile.php';
+require_once dirname(__DIR__, 2) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/include/comment_view.php';
-require_once './include/common.php';
-$xoopsOption['template_main'] = $dirname . '_xgdb_detail.html';
+require XOOPS_ROOT_PATH . '/include/comment_view.php';
+require_once __DIR__ . '/include/common.php';
+$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_detail.tpl';
 
-// 存在チェック
-$did = isset($_GET['did']) ? intval($_GET['did']) : 0;
+// Existence check
+$did = isset($_GET['did']) ? (int)$_GET['did'] : 0;
 $sql = "SELECT d.*, u.uname FROM $data_tbl AS d LEFT OUTER JOIN $users_tbl AS u ON d.add_uid = u.uid WHERE d.did = $did";
 $res = $xoopsDB->query($sql);
 if (0 == $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_NO_ERR_MSG'));
 }
 
-// 表示値割り当て
+// Display value assignment
 $row = $xoopsDB->fetchArray($res);
 assignDetail($row, $item_defs, $dirname);
 $xoopsTpl->assign('item_defs', $item_defs);
 
-$perm = checkPerm($gids, $cfg_manage_gids) || $uid == $row['add_uid'] ? true : false;
+$perm = (checkPerm($gids, $cfg_manage_gids) || $uid == $row['add_uid']);
 $xoopsTpl->assign('perm', $perm);
 
 $his_perm = false;

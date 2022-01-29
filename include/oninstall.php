@@ -2,22 +2,31 @@
 
 $dirname = basename(dirname(__DIR__));
 
-eval('function xoops_module_install_' . $dirname . '($module){
+eval(
+    'function xoops_module_install_' . $dirname . '($module){
     return xgdb_oninstall($module, "' . $dirname . '");
-}');
+}'
+);
 
 if (!function_exists('xgdb_oninstall')) {
+    /**
+     * @param $module
+     * @param $dirname
+     * @return bool
+     */
     function xgdb_oninstall($module, $dirname)
     {
         global $ret, $xoopsConfig, $xoopsUser;
-        $myts = MyTextSanitizer::getInstance();
-        $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
-        $tplfile_tbl = $xoopsDB->prefix('tplfile');
+        $myts          = MyTextSanitizer::getInstance();
+        $xoopsDB       = XoopsDatabaseFactory::getDatabaseConnection();
+        $tplfile_tbl   = $xoopsDB->prefix('tplfile');
         $tplsource_tbl = $xoopsDB->prefix('tplsource');
         $newblocks_tbl = $xoopsDB->prefix('newblocks');
-        $mid = $module->getVar('mid');
+        $mid           = $module->getVar('mid');
 
-        @mkdir(XOOPS_UPLOAD_PATH . '/' . $dirname, 0777);
+        if (!mkdir($concurrentDirectory = XOOPS_UPLOAD_PATH . '/' . $dirname, 0777) && !is_dir($concurrentDirectory)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
         $file = fopen(XOOPS_UPLOAD_PATH . '/' . $dirname . '/.htaccess', 'w');
         flock($file, LOCK_EX);
         //        fputs($file, 'SetEnvIf Referer "^' . XOOPS_URL . "/modules/" . $dirname . '/(.+\.php)?" ref_ok' . "\n");
@@ -28,59 +37,61 @@ if (!function_exists('xgdb_oninstall')) {
         fclose($file);
 
         $sql_file_path = XOOPS_ROOT_PATH . '/modules/' . $dirname . '/sql/mysql.sql';
-        $prefix = $xoopsDB->prefix() . '_' . $dirname;
-        if (file_exists($sql_file_path)) {
-            $ret[] = 'SQL file found at <b>' . $myts->htmlSpecialChars($sql_file_path) . '</b>.<br /> Creating tables...<br />';
-            include_once XOOPS_ROOT_PATH . '/class/database/sqlutility.php';
+        $prefix        = $xoopsDB->prefix() . '_' . $dirname;
+        if (is_file($sql_file_path)) {
+            $ret[] = 'SQL file found at <b>' . htmlspecialchars($sql_file_path, ENT_QUOTES | ENT_HTML5) . '</b>.<br> Creating tables...<br>';
+            require_once XOOPS_ROOT_PATH . '/class/database/sqlutility.php';
             $sql_query = fread(fopen($sql_file_path, 'r'), filesize($sql_file_path));
             $sql_query = trim($sql_query);
             SqlUtility::splitMySqlFile($pieces, $sql_query);
             $created_tables = [];
-            $error = false;
+            $error          = false;
             foreach ($pieces as $piece) {
                 $prefixed_query = SqlUtility::prefixQuery($piece, $prefix);
                 if (!$prefixed_query) {
-                    $ret[] = '<b>' . $myts->htmlSpecialChars($piece) . '</b> is not a valid SQL!<br />';
+                    $ret[] = '<b>' . htmlspecialchars($piece, ENT_QUOTES | ENT_HTML5) . '</b> is not a valid SQL!<br>';
                     $error = true;
                     break;
                 }
                 if (!$xoopsDB->query($prefixed_query[0])) {
-                    $ret[] = $myts->htmlSpecialChars($xoopsDB->error());
+                    $ret[] = htmlspecialchars($xoopsDB->error(), ENT_QUOTES | ENT_HTML5);
                     $error = true;
                     break;
                 }
-                if (!in_array($prefixed_query[4], $created_tables, true)) {
-                    $ret[] = '&nbsp;&nbsp;Table <b>' . $myts->htmlSpecialChars($prefix . '_' . $prefixed_query[4]) . '</b> created.<br />';
-                    $created_tables[] = $prefixed_query[4];
+                if (in_array($prefixed_query[4], $created_tables, true)) {
+                    $ret[] = '&nbsp;&nbsp;Data inserted to table <b>' . htmlspecialchars($prefix . '_' . $prefixed_query[4], ENT_QUOTES | ENT_HTML5) . '</b>.<br>';
                 } else {
-                    $ret[] = '&nbsp;&nbsp;Data inserted to table <b>' . $myts->htmlSpecialChars($prefix . '_' . $prefixed_query[4]) . '</b>.<br />';
+                    $ret[]            = '&nbsp;&nbsp;Table <b>' . htmlspecialchars($prefix . '_' . $prefixed_query[4], ENT_QUOTES | ENT_HTML5) . '</b> created.<br>';
+                    $created_tables[] = $prefixed_query[4];
                 }
             }
         }
 
-        $res = $xoopsDB->query('SELECT groupid FROM ' . $xoopsDB->prefix('groups') . ' ORDER BY groupid ASC');
+        $res       = $xoopsDB->query('SELECT groupid FROM ' . $xoopsDB->prefix('groups') . ' ORDER BY groupid ASC');
         $gidstring = '|';
         while ([$groupid] = $xoopsDB->fetchRow($res)) {
             $gidstring .= $groupid . '|';
         }
         $xoopsDB->query("UPDATE `$prefix" . "_xgdb_item` SET show_gids = '$gidstring'");
 
-        $tplfile_handler = xoops_gethandler('tplfile');
-        $template_dir = XOOPS_ROOT_PATH . '/modules/' . $dirname . '/templates';
-        if ($dir_handler = @opendir($template_dir . '/')) {
-            $ret[] = 'Adding templates...<br />';
-            while (false !== ($template_file = readdir($dir_handler))) {
-                if ('.' == mb_substr($template_file, 0, 1)) {
+        $tplfileHandler = xoops_getHandler('tplfile');
+        $template_dir   = XOOPS_ROOT_PATH . '/modules/' . $dirname . '/templates';
+        if ($dirHandler = @opendir($template_dir . '/')) {
+            $ret[] = 'Adding templates...<br>';
+            while (false !== ($template_file = readdir($dirHandler))) {
+                if ('.' === mb_substr($template_file, 0, 1)) {
                     continue;
-                } elseif ('index.html' == $template_file) {
+                }
+
+                if ('index.html' === $template_file) {
                     continue;
                 }
 
                 $xgdb_template_file = $dirname . '_' . $template_file;
                 $template_file_path = $template_dir . '/' . $template_file;
                 if (is_file($template_file_path)) {
-                    $mtime = intval(@filemtime($template_file_path));
-                    $template = $tplfile_handler->create();
+                    $mtime    = (int)@filemtime($template_file_path);
+                    $template = $tplfileHandler->create();
                     $template->setVar('tpl_source', file_get_contents($template_file_path), true);
                     $template->setVar('tpl_refid', $mid);
                     $template->setVar('tpl_tplset', 'default');
@@ -91,32 +102,32 @@ if (!function_exists('xgdb_oninstall')) {
                     $template->setVar('tpl_lastimported', 0);
                     $template->setVar('tpl_type', 'module');
 
-                    if (!$tplfile_handler->insert($template)) {
-                        $ret[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Could not insert template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b> to the database.</span><br />';
-                    } else {
-                        $template_id = $template->getVar('tpl_id');
-                        $ret[] = '&nbsp;&nbsp;Template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b> added to the database. (ID: <b>' . $template_id . '</b>)<br />';
-                        $error_reporting = error_reporting(0);
+                    if ($tplfileHandler->insert($template)) {
+                        $template_id            = $template->getVar('tpl_id');
+                        $ret[]                  = '&nbsp;&nbsp;Template <b>' . htmlspecialchars($xgdb_template_file, ENT_QUOTES | ENT_HTML5) . '</b> added to the database. (ID: <b>' . $template_id . '</b>)<br>';
+                        $error_reporting        = error_reporting(0);
                         $error_reporting_result = xoops_template_touch($template_id);
                         error_reporting($error_reporting);
-                        if (!$error_reporting_result) {
-                            $ret[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Failed compiling template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b>.</span><br />';
+                        if ($error_reporting_result) {
+                            $ret[] = '&nbsp;&nbsp;Template <b>' . htmlspecialchars($xgdb_template_file, ENT_QUOTES | ENT_HTML5) . '</b> compiled.</span><br>';
                         } else {
-                            $ret[] = '&nbsp;&nbsp;Template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b> compiled.</span><br />';
+                            $ret[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Failed compiling template <b>' . htmlspecialchars($xgdb_template_file, ENT_QUOTES | ENT_HTML5) . '</b>.</span><br>';
                         }
+                    } else {
+                        $ret[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Could not insert template <b>' . htmlspecialchars($xgdb_template_file, ENT_QUOTES | ENT_HTML5) . '</b> to the database.</span><br>';
                     }
                 }
             }
-            closedir($dir_handler);
+            closedir($dirHandler);
         }
 
         $blocks = $module->getInfo('blocks');
         foreach ($blocks as $func_num => $block) {
-            $template_dir .= '/blocks';
+            $template_dir       .= '/blocks';
             $xgdb_template_file = $block['template'];
-            $template_file = mb_substr($xgdb_template_file, mb_strlen($dirname) + 1, mb_strlen($xgdb_template_file));
+            $template_file      = mb_substr($xgdb_template_file, mb_strlen($dirname) + 1, mb_strlen($xgdb_template_file));
             $template_file_path = "$template_dir/$template_file";
-            if (file_exists($template_file_path)) {
+            if (is_file($template_file_path)) {
                 $sql = "SELECT bid FROM $newblocks_tbl WHERE mid = $mid AND func_num = $func_num AND show_func = '" . addslashes($block['show_func']) . "' AND func_file = '" . addslashes($block['file']) . "'";
                 $res = $xoopsDB->query($sql);
                 [$bid] = $xoopsDB->fetchRow($res);
@@ -128,8 +139,8 @@ if (!function_exists('xgdb_oninstall')) {
                 $xoopsDB->query("DELETE FROM $tplfile_tbl WHERE tpl_id = $tpl_id");
                 $xoopsDB->query("DELETE FROM $tplsource_tbl WHERE tpl_id = $tpl_id");
 
-                $mtime = intval(@filemtime($template_file_path));
-                $template = $tplfile_handler->create();
+                $mtime    = (int)@filemtime($template_file_path);
+                $template = $tplfileHandler->create();
                 $template->setVar('tpl_source', file_get_contents($template_file_path), true);
                 $template->setVar('tpl_refid', $bid);
                 $template->setVar('tpl_tplset', 'default');
@@ -140,19 +151,19 @@ if (!function_exists('xgdb_oninstall')) {
                 $template->setVar('tpl_lastimported', 0);
                 $template->setVar('tpl_type', 'block');
 
-                if (!$tplfile_handler->insert($template)) {
-                    $ret[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Could not insert template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b> to the database.</span><br />';
-                } else {
-                    $template_id = $template->getVar('tpl_id');
-                    $ret[] = '&nbsp;&nbsp;Template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b> added to the database. (ID: <b>' . $template_id . '</b>)<br />';
-                    $error_reporting = error_reporting(0);
+                if ($tplfileHandler->insert($template)) {
+                    $template_id            = $template->getVar('tpl_id');
+                    $ret[]                  = '&nbsp;&nbsp;Template <b>' . htmlspecialchars($xgdb_template_file, ENT_QUOTES | ENT_HTML5) . '</b> added to the database. (ID: <b>' . $template_id . '</b>)<br>';
+                    $error_reporting        = error_reporting(0);
                     $error_reporting_result = xoops_template_touch($template_id);
                     error_reporting($error_reporting);
-                    if (!$error_reporting_result) {
-                        $ret[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Failed compiling template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b>.</span><br />';
+                    if ($error_reporting_result) {
+                        $ret[] = '&nbsp;&nbsp;Template <b>' . htmlspecialchars($xgdb_template_file, ENT_QUOTES | ENT_HTML5) . '</b> compiled.</span><br>';
                     } else {
-                        $ret[] = '&nbsp;&nbsp;Template <b>' . $myts->htmlSpecialChars($xgdb_template_file) . '</b> compiled.</span><br />';
+                        $ret[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Failed compiling template <b>' . htmlspecialchars($xgdb_template_file, ENT_QUOTES | ENT_HTML5) . '</b>.</span><br>';
                     }
+                } else {
+                    $ret[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Could not insert template <b>' . htmlspecialchars($xgdb_template_file, ENT_QUOTES | ENT_HTML5) . '</b> to the database.</span><br>';
                 }
             }
         }
@@ -161,22 +172,22 @@ if (!function_exists('xgdb_oninstall')) {
         if (!extension_loaded('mbstring')) {
             $ret[] = '<font color="red">' . constant('_MI_' . $affix . '_MBSTRING_DISABLE_ERR') . '</font>';
         }
-        if (!extension_loaded('gd')) {
-            $ret[] = '<font color="red">' . constant('_MI_' . $affix . '_GD_DISABLE_ERR') . '</font>';
-        } else {
+        if (extension_loaded('gd')) {
             $gd_infos = gd_info();
             if (!checkGDSupport()) {
                 $ret[] = '<font color="red">' . constant('_MI_' . $affix . '_GD_NOT_SUPPORTED_ERR') . '</font>';
             }
+        } else {
+            $ret[] = '<font color="red">' . constant('_MI_' . $affix . '_GD_DISABLE_ERR') . '</font>';
         }
 
         return true;
     }
 
     /**
-     * GD(gif��jpeg��png)�򥵥ݡ��Ȥ��Ƥ��뤫�ɤ������֤�.
+     * Returns whether GD (gif, jpeg, png) is supported.
      *
-     * @return bool GD(gif��jpeg��png)�򥵥ݡ��Ȥ��Ƥ������true
+     * @return Bool True if Boolean GD (gif, jpeg, png) is supported, otherwise false
      */
     function checkGDSupport()
     {

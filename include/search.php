@@ -3,21 +3,30 @@
 $dirname = basename(dirname(__DIR__));
 
 eval('function ' . $dirname . '_xgdb_search($keywords, $andor, $limit, $offset, $userid){
-    return xgdb_search("' . $dirname . '", $keywords, $andor, $limit, $offset, $userid);
+	return xgdb_search("' . $dirname . '", $keywords, $andor, $limit, $offset, $userid);
 }');
 
 if (!function_exists('xgdb_search')) {
+    /**
+     * @param $dirname
+     * @param $keywords
+     * @param $andor
+     * @param $limit
+     * @param $offset
+     * @param $userid
+     * @return array
+     */
     function xgdb_search($dirname, $keywords, $andor, $limit, $offset, $userid)
     {
         global $xoopsUser;
         require_once XOOPS_ROOT_PATH . '/modules/' . $dirname . '/include/functions.php';
-        $myts = MyTextSanitizer::getInstance();
-        $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
+        $myts     = MyTextSanitizer::getInstance();
+        $xoopsDB  = XoopsDatabaseFactory::getDatabaseConnection();
         $data_tbl = $xoopsDB->prefix($dirname . '_xgdb_data');
-        $ret = [];
+        $ret      = [];
 
-        $module_handler = xoops_gethandler('module');
-        $xoopsModule = $module_handler->getByDirname($dirname);
+        $moduleHandler = xoops_getHandler('module');
+        $xoopsModule   = $moduleHandler->getByDirname($dirname);
 
         if (is_object($xoopsUser)) {
             $gids = $xoopsUser->getGroups();
@@ -25,27 +34,27 @@ if (!function_exists('xgdb_search')) {
             $gids = [3];
         }
 
-        $item_defs = getItemDefs($dirname, $gids);
+        $item_defs        = getItemDefs($dirname, $gids);
         $site_search_defs = getDefs($item_defs, 'site_search');
 
-        // GP�ѿ����ͤΥޥ��å��������Ȥ�̵����
-        if (get_magic_quotes_gpc()) {
-            $_POST = array_map('stripSlashesDeep', $_POST);
-            $_GET = array_map('stripSlashesDeep', $_GET);
-        }
+        // Disable magic quotes for GP variable values
+        //       if (function_exists('get_magic_quotes_gpc') && @get_magic_quotes_gpc()) {
+        //            $_POST = array_map('stripSlashesDeep', $_POST);
+        //            $_GET = array_map('stripSlashesDeep', $_GET);
+        //        }
 
         $andor = mb_strtoupper($andor);
-        if ('AND' != $andor && 'OR' != $andor && 'EXACT' != $andor) {
+        if ('AND' !== $andor && 'OR' !== $andor && 'EXACT' !== $andor) {
             $andor = 'AND';
         }
-        $userid = intval($userid);
+        $userid = (int)$userid;
 
         $wheres = [];
         if (is_array($keywords)) {
             foreach ($keywords as $keyword) {
                 $where = '(';
                 foreach ($site_search_defs as $item_name => $item_def) {
-                    if ('date' == $item_def['type']) {
+                    if ('date' === $item_def['type']) {
                         if (false !== strtotime($keyword)) {
                             $where .= $item_name . " = '" . addslashes($keyword) . "' OR ";
                         }
@@ -83,3 +92,5 @@ if (!function_exists('xgdb_search')) {
         return $ret;
     }
 }
+
+?>

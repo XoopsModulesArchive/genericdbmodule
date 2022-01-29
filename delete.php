@@ -1,37 +1,33 @@
 <?php
 
-require_once '../../mainfile.php';
+require_once dirname(__DIR__, 2) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/header.php';
-require_once './include/common.php';
-$xoopsOption['template_main'] = $dirname . '_xgdb_delete.html';
+require_once __DIR__ . '/include/common.php';
+$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_delete.tpl';
 
-$op = isset($_POST['op']) ? $_POST['op'] : '';
-$did = isset($_POST['did']) ? intval($_POST['did']) : 0;
+$op  = $_POST['op'] ?? '';
+$did = isset($_POST['did']) ? (int)$_POST['did'] : 0;
 
-// 存在チェック
+// Existence check
 $sql = "SELECT d.*, u.uname FROM $data_tbl AS d LEFT OUTER JOIN $users_tbl AS u ON d.add_uid = u.uid WHERE d.did = $did";
 $res = $xoopsDB->query($sql);
 if (0 == $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_NO_ERR_MSG'));
 }
 
-// 権限チェック
+// Authorization check
 $row = $xoopsDB->fetchArray($res);
 if (!checkPerm($gids, $cfg_manage_gids) && $uid != $row['add_uid']) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_PERM_ERR_MSG'));
 }
 
 $errors = [];
-if ('delete' == $op) {
-    // トークンチェック
-    if (!XoopsMultiTokenHandler::quickValidate($dirname . '_delete')) {
-        $errors[] = getMDConst('_TOKEN_ERR_MSG');
-    } else {
-        if (!$xoopsDB->query("DELETE FROM $data_tbl WHERE did = $did")) {
-            $errors[] = getMDConst('_SYSTEM_ERR_MS');
-        } else {
-            // 更新履歴追加
-            $datetime = date('Y-m-d H:i:s');
+if ('delete' === $op) {
+    // Token check
+    if (XoopsMultiTokenHandler::quickValidate($dirname . '_delete')) {
+        if ($xoopsDB->query("DELETE FROM $data_tbl WHERE did = $did")) {
+            // Update history added
+            $datetime       = date('Y-m-d H:i:s');
             $insert_his_sql = "INSERT INTO $his_tbl (did, operation, update_uid, update_date";
             foreach ($item_defs as $item_name => $item_def) {
                 $insert_his_sql .= ', ' . $item_name;
@@ -48,27 +44,31 @@ if ('delete' == $op) {
             $xoopsDB->query($insert_his_sql);
 
             foreach ($item_defs as $item_name => $item_def) {
-                if ('file' == $item_def['type'] || 'image' == $item_def['type']) {
+                if ('file' === $item_def['type'] || 'image' === $item_def['type']) {
                     @unlink($module_upload_dir . '/' . getRealFileName($did, $item_name, $row[$item_name]));
                 }
             }
 
-            $extra_tags = ['DID' => $did];
-            $notification_handler = xoops_gethandler('notification');
-            $notification_handler->triggerEvent('change', $did, 'delete', $extra_tags);
-            $notification_handler->unsubscribeByItem($xoopsModule->getVar('mid'), 'change', $did);
+            $extra_tags          = ['DID' => $did];
+            $notificationHandler = xoops_getHandler('notification');
+            $notificationHandler->triggerEvent('change', $did, 'delete', $extra_tags);
+            $notificationHandler->unsubscribeByItem($xoopsModule->getVar('mid'), 'change', $did);
 
             redirect_header($module_url . '/index.php', 5, getMDConst('_DELETE_MSG'));
+        } else {
+            $errors[] = getMDConst('_SYSTEM_ERR_MS');
         }
+    } else {
+        $errors[] = getMDConst('_TOKEN_ERR_MSG');
     }
 } else {
-    // 表示値割り当て
+    // Display value assignment
     assignDetail($row, $item_defs, $dirname);
     $xoopsTpl->assign('item_defs', $item_defs);
 }
 
-// トークン生成
-$token = &XoopsMultiTokenHandler::quickCreate($dirname . '_delete');
+// Token generation
+$token = XoopsMultiTokenHandler::quickCreate($dirname . '_delete');
 $xoopsTpl->assign('token', $token->getHtml());
 
 $xoopsTpl->assign('errors', $errors);

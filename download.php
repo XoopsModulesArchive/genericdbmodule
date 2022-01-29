@@ -1,13 +1,13 @@
 <?php
 
-require_once '../../mainfile.php';
+require_once dirname(__DIR__, 2) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/header.php';
-require_once './include/common.php';
+require_once __DIR__ . '/include/common.php';
 
-$did = 0;
+$did      = 0;
 $col_name = '';
 if (isset($_GET['did'])) {
-    $did = intval($_GET['did']);
+    $did = (int)$_GET['did'];
 }
 foreach ($item_defs as $item_name => $item_def) {
     if ($item_name === $_GET['col_name']) {
@@ -39,7 +39,7 @@ if (preg_match('/MSIE/i', $browser)) {
 }
 
 $file_name = getRealFileName($did, $col_name, $file_name);
-$filepath = XOOPS_ROOT_PATH . "/uploads/$dirname/$file_name";
+$filepath  = XOOPS_ROOT_PATH . "/uploads/$dirname/$file_name";
 if (!file_exists($filepath)) {
     header('HTTP/1.1 404 Not Found');
     exit;

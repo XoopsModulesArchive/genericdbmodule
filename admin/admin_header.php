@@ -13,12 +13,12 @@
  * @copyright    The XOOPS Project http://sourceforge.net/projects/xoops/
  * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
  * @since
- * @author     XOOPS Development Team
- * @version    $Id $
+ * @author       XOOPS Development Team
+ * @version      $Id $
  */
-$path = dirname(dirname(dirname(__DIR__)));
-include_once $path . '/mainfile.php';
-include_once $path . '/include/cp_functions.php';
+$path = dirname(__DIR__, 3);
+require_once $path . '/mainfile.php';
+require_once $path . '/include/cp_functions.php';
 require_once $path . '/include/cp_header.php';
 
 global $xoopsModule;
@@ -33,7 +33,7 @@ xoops_loadLanguage('admin', $thisModuleDir);
 xoops_loadLanguage('modinfo', $thisModuleDir);
 xoops_loadLanguage('main', $thisModuleDir);
 
-$pathIcon16 = XOOPS_URL . '/' . $xoopsModule->getInfo('icons16');
-$pathIcon32 = XOOPS_URL . '/' . $xoopsModule->getInfo('icons32');
+$pathIcon16      = XOOPS_URL . '/' . $xoopsModule->getInfo('icons16');
+$pathIcon32      = XOOPS_URL . '/' . $xoopsModule->getInfo('icons32');
 $pathModuleAdmin = XOOPS_ROOT_PATH . '/' . $xoopsModule->getInfo('dirmoduleadmin');
 require_once $pathModuleAdmin . '/moduleadmin/moduleadmin.php';

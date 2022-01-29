@@ -1,46 +1,46 @@
 <?php
 
-require_once '../../../include/cp_header.php';
-require_once './include/common.php';
+require_once dirname(__DIR__, 3) . '/include/cp_header.php';
+require_once __DIR__ . '/include/common.php';
 
 $errors = [];
 if (!extension_loaded('mbstring')) {
     $errors[] = getAMConst('_MBSTRING_DISABLE_ERR');
 }
-if (!extension_loaded('gd')) {
-    $errors[] = getAMConst('_GD_DISABLE_ERR');
-} else {
+if (extension_loaded('gd')) {
     $gd_infos = gd_info();
     if (!checkGDSupport()) {
         $errors[] = getAMConst('_GD_NOT_SUPPORTED_ERR');
     }
+} else {
+    $errors[] = getAMConst('_GD_DISABLE_ERR');
 }
 
 xoops_cp_header();
 
 $items = [];
-$res = $xoopsDB->query("SELECT * FROM $item_tbl ORDER BY `sequence` ASC, `iid` ASC");
-while ($row = $xoopsDB->fetchArray($res)) {
-    $item = [];
-    $item['iid'] = $row['iid'];
-    $item['name'] = $myts->htmlSpecialChars($row['name']);
-    $item['caption'] = $myts->htmlSpecialChars($row['caption']);
-    $item['type'] = $myts->htmlSpecialChars($row['type']);
+$res   = $xoopsDB->query("SELECT * FROM $item_tbl ORDER BY `sequence` ASC, `iid` ASC");
+while (false !== ($row = $xoopsDB->fetchArray($res))) {
+    $item               = [];
+    $item['iid']        = $row['iid'];
+    $item['name']       = htmlspecialchars($row['name'], ENT_QUOTES | ENT_HTML5);
+    $item['caption']    = htmlspecialchars($row['caption'], ENT_QUOTES | ENT_HTML5);
+    $item['type']       = htmlspecialchars($row['type'], ENT_QUOTES | ENT_HTML5);
     $item['type_title'] = $types[$row['type']];
-    $item['required'] = $row['required'];
-    $item['sequence'] = $row['sequence'];
-    $item['search'] = $row['search'];
-    $item['list'] = $row['list'];
-    $item['add'] = $row['add'];
-    $item['update'] = $row['update'];
-    $item['detail'] = $row['detail'];
-    $item['duplicate'] = $row['duplicate'];
-    $items[] = $item;
+    $item['required']   = $row['required'];
+    $item['sequence']   = $row['sequence'];
+    $item['search']     = $row['search'];
+    $item['list']       = $row['list'];
+    $item['add']        = $row['add'];
+    $item['update']     = $row['update'];
+    $item['detail']     = $row['detail'];
+    $item['duplicate']  = $row['duplicate'];
+    $items[]            = $item;
 }
 $xoopsTpl->assign('items', $items);
 
 $type_item_def = ['options' => array_flip($types), 'type' => 'select', 'value_type' => 'string'];
-$item_add_msg = sprintf($admin_consts['_ITEM_ADD_MSG'], makeSelectForm('type', $type_item_def, ''));
+$item_add_msg  = sprintf($admin_consts['_ITEM_ADD_MSG'], makeSelectForm('type', $type_item_def, ''));
 $xoopsTpl->assign('item_add_msg', $item_add_msg);
 $xoopsTpl->assign('errors', $errors);
 //----------------------mb
@@ -63,6 +63,6 @@ $xoopsTpl->assign('_DUPLICATE', getAMConst('_DUPLICATE'));
 $xoopsTpl->assign('_OPERATION', getAMConst('_OPERATION'));
 $xoopsTpl->assign('_YES_MARK', getAMConst('_YES_MARK'));
 
-$xoopsTpl->display(XOOPS_ROOT_PATH . '/modules/' . $dirname . '/templates/admin/xgdb_admin_index.html');
+$xoopsTpl->display(XOOPS_ROOT_PATH . '/modules/' . $dirname . '/templates/admin/xgdb_admin_index.tpl');
 
 xoops_cp_footer();
