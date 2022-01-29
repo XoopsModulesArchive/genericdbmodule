@@ -111,19 +111,15 @@ if ('update' === $op) {
                         }
                     } elseif (('cbox' === $item_def['type'] || 'mselect' === $item_def['type']) && is_array($$item_name)) {
                         $insert_his_sql .= ", '" . addslashes(array2string($$item_name)) . "'";
-                    } else {
-                        if ('' === $$item_name) {
+                    } elseif ('' === $$item_name) {
                             $insert_his_sql .= ', NULL';
                         } else {
                             $insert_his_sql .= ", '" . addslashes($$item_name) . "'";
-                        }
                     }
-                } else {
-                    if ('' !== $row[$item_name]) {
+                } elseif ('' !== $row[$item_name]) {
                         $insert_his_sql .= ', NULL';
                     } else {
                         $insert_his_sql .= ", '" . $row[$item_name] . "'";
-                    }
                 }
             }
             $insert_his_sql .= ')';

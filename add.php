@@ -57,14 +57,12 @@ if ('add' === $op) {
             if (('cbox' === $item_def['type'] || 'mselect' === $item_def['type']) && is_array($$item_name)) {
                 $insert_data_sql .= "'" . addslashes(array2string($$item_name)) . "', ";
                 $insert_his_sql  .= "'" . addslashes(array2string($$item_name)) . "', ";
-            } else {
-                if ('' === $$item_name) {
+            } elseif ('' === $$item_name) {
                     $insert_data_sql .= 'NULL, ';
                     $insert_his_sql  .= 'NULL, ';
                 } else {
                     $insert_data_sql .= "'" . addslashes($$item_name) . "', ";
                     $insert_his_sql  .= "'" . addslashes($$item_name) . "', ";
-                }
             }
         }
         $insert_data_sql = mb_substr($insert_data_sql, 0, -2) . ')';

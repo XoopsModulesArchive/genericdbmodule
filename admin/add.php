@@ -35,11 +35,9 @@ if ('add' === $op) {
                 $errors[]                       = sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
                 $item_defs[$item_name]['error'] = '<br>' . sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
             }
-        } else {
-            if ($item_def['required']) {
+        } elseif ($item_def['required']) {
                 $errors[]                       = sprintf(getAMConst('_REQ_ERR_MSG'), $item_def['caption']);
                 $item_defs[$item_name]['error'] = '<br>' . sprintf(getAMConst('_REQ_ERR_MSG'), $item_def['caption']);
-            }
         }
     }
 
@@ -65,14 +63,12 @@ if ('add' === $op) {
             foreach ($item_defs as $item_name => $item_def) {
                 if ('name' === $item_name) {
                     $sql .= "'xgdb_" . addslashes($$item_name) . "', ";
-                } else {
-                    if ('' === $$item_name && !$item_def['required']) {
+                } elseif ('' === $$item_name && !$item_def['required']) {
                         $sql .= 'NULL, ';
                     } elseif ('show_gids' === $item_name) {
                         $sql .= "'|" . addslashes(array2string($$item_name)) . "|', ";
                     } else {
                         $sql .= "'" . addslashes($$item_name) . "', ";
-                    }
                 }
             }
             $sql = mb_substr($sql, 0, -2);

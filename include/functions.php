@@ -1102,11 +1102,9 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
                         $ret                            = $_FILES[$item_name]['name'];
                         $uploaded_file_defs[$item_name] = $item_def;
                     }
-                } else {
-                    if ('add' === $type && $item_def['required']) {
+                } elseif ('add' === $type && $item_def['required']) {
                         $errors[]                       = sprintf(getMDConst('_REQ_ERR_MSG'), $item_def['caption']);
                         $item_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_REQ_ERR_MSG'), $item_def['caption']);
-                    }
                 }
             } elseif ('number' === $item_def['type']) {
                 // For numbers
@@ -1129,7 +1127,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
                         $errors[]                       = sprintf(getMDConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
                         $item_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
                     }
-                } else if ($item_def['required']) {
+                } elseif ($item_def['required']) {
                             $errors[]                       = sprintf(getMDConst('_REQ_ERR_MSG'), $item_def['caption']);
                             $item_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_REQ_ERR_MSG'), $item_def['caption']);
                     }

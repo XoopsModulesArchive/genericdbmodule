@@ -35,22 +35,18 @@ if ('update' === $op) {
         $$item_name = '';
         if ('name' === $item_name || 'type' === $item_name || 'value_type' === $item_name) {
             $$item_name = $row[$item_name];
-        } else {
-            if (isset($_POST[$item_name]) && '' !== $_POST[$item_name]) {
-                $$item_name = $_POST[$item_name];
-                if ('number' === $item_def['type'] && isset($item_def['value_range_min']) && $$item_name < $item_def['value_range_min']) {
-                    $errors[]                       = sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
-                    $item_defs[$item_name]['error'] = '<br>' . sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
-                } elseif ('number' === $item_def['type'] && isset($item_def['value_range_max']) && $$item_name > $item_def['value_range_max']) {
-                    $errors[]                       = sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
-                    $item_defs[$item_name]['error'] = '<br>' . sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
-                }
-            } else {
-                if ($item_def['required']) {
-                    $errors[]                       = sprintf(getAMConst('_REQ_ERR_MSG'), $item_def['caption']);
-                    $item_defs[$item_name]['error'] = '<br>' . sprintf(getAMConst('_REQ_ERR_MSG'), $item_def['caption']);
-                }
+        } elseif (isset($_POST[$item_name]) && '' !== $_POST[$item_name]) {
+            $$item_name = $_POST[$item_name];
+            if ('number' === $item_def['type'] && isset($item_def['value_range_min']) && $$item_name < $item_def['value_range_min']) {
+                $errors[]                       = sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
+                $item_defs[$item_name]['error'] = '<br>' . sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
+            } elseif ('number' === $item_def['type'] && isset($item_def['value_range_max']) && $$item_name > $item_def['value_range_max']) {
+                $errors[]                       = sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
+                $item_defs[$item_name]['error'] = '<br>' . sprintf(getAMConst('_RANGE_ERR_MSG'), $item_def['caption'], getRangeText($item_def['value_range_min'], $item_def['value_range_max']));
             }
+        } elseif ($item_def['required']) {
+            $errors[]                       = sprintf(getAMConst('_REQ_ERR_MSG'), $item_def['caption']);
+            $item_defs[$item_name]['error'] = '<br>' . sprintf(getAMConst('_REQ_ERR_MSG'), $item_def['caption']);
         }
     }
 
