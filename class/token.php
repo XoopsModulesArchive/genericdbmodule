@@ -66,7 +66,7 @@ class XoopsToken
             $this->_unlimited_ = true;
         }
 
-        $this->_token_ = $this->_generateToken();
+        $this->_token_ = $this->generateToken();
     }
 
     /**
@@ -74,7 +74,7 @@ class XoopsToken
      *
      * @return string
      */
-    public function _generateToken()
+    public function generateToken()
     {
         // mt_srand(microtime() * 100000);
 
