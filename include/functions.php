@@ -455,7 +455,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
     /**
      * stripslashesRecursively process and return with a function.
      *
-     * @param $value Value to be processed by stripslashes function
+     * @param array|string $value Value to be processed by stripslashes function
      * @return String/Array The value of the argument processed by the stripslashes function
      */
     //    function stripSlashesDeep($value)
@@ -996,7 +996,6 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
     /**
      * Returns whether the number is within range.
      *
-     * @param Array $item_def Item definition information
      * @param Array $item_def Item definition information
      * @return int -1：Less than, 0: in range, 1: over
      */
