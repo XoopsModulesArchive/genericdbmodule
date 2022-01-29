@@ -918,7 +918,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return Boolean True for fractional numbers, false otherwise
      */
-    function is_floatval($value)
+    function isFloat($value)
     {
         if (!isset($value) || '' === $value) {
             return false;
@@ -1114,9 +1114,9 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
                     if ('int' === $item_def['value_type'] && !isInteger($ret)) {
                         $errors[]                       = sprintf(getMDConst('_INT_ERR_MSG'), $item_def['caption']);
                         $item_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_INT_ERR_MSG'), $item_def['caption']);
-                    } elseif ('float' === $item_def['value_type'] && !is_floatval($ret)) {
+                    } elseif ('float' === $item_def['value_type'] && !isFloat($ret)) {
                             // Whether it is in decimal format
-                            if (!is_floatval($ret . '.0')) {
+                            if (!isFloat($ret . '.0')) {
                                 $errors[]                       = sprintf(getMDConst('_FLOAT_ERR_MSG'), $item_def['caption']);
                                 $item_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_FLOAT_ERR_MSG'), $item_def['caption']);
                             }
@@ -1289,9 +1289,9 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
                     if ('int' === $search_defs[$item_name]['value_type'] && !isInteger($ret)) {
                         $errors[]                         = sprintf(getMDConst('_INT_ERR_MSG'), $search_defs[$item_name]['caption']);
                         $search_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_INT_ERR_MSG'), $search_defs[$item_name]['caption']);
-                    } elseif ('float' === $search_defs[$item_name]['value_type'] && !is_floatval($ret)) {
+                    } elseif ('float' === $search_defs[$item_name]['value_type'] && !isFloat($ret)) {
                         // Whether it is in decimal format
-                        if (!is_floatval($ret . '.0')) {
+                        if (!isFloat($ret . '.0')) {
                             $errors[]                         = sprintf(getMDConst('_FLOAT_ERR_MSG'), $search_defs[$item_name]['caption']);
                             $search_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_FLOAT_ERR_MSG'), $search_defs[$item_name]['caption']);
                         }
