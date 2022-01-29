@@ -3,19 +3,19 @@
 <{if count($errors) > 0}>
 <div class="errorMsg">
     <{foreach item=error from=$errors}>
-    <{$error}><br />
+    <{$error}><br>
     <{/foreach}>
 </div>
-<br />
+<br>
 <{/if}>
 
 <center>
     <form action="add.php" method="post">
         <{$item_add_msg}>
-        <input type="submit" value="<{$_ITEM_ADD}>" />
+        <input type="submit" value="<{$_ITEM_ADD}>">
     </form>
 </center>
-<br />
+<br>
 
 <table class="outer" cellpadding="1" cellspacing="1" border="0" width="100%">
     <tr>

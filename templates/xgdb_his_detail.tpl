@@ -1,17 +1,17 @@
 <div align="center">
     <{if $op == 'search'}>
     <form action="his_search.php" method="post">
-        <input type="hidden" name="op" value="back_search" />
-        <input type="submit" value="<{$_BACK}>" />
+        <input type="hidden" name="op" value="back_search">
+        <input type="submit" value="<{$_BACK}>">
     </form>
     <{else}>
     <form action="detail.php" method="get">
-        <input type="hidden" name="did" value="<{$did}>" />
-        <input type="submit" value="<{$_BACK}>" />
+        <input type="hidden" name="did" value="<{$did}>">
+        <input type="submit" value="<{$_BACK}>">
     </form>
     <{/if}>
 </div>
-<br />
+<br>
 
 <{if $operation_raw == 'update'}>
 <table class="outer" cellpadding="1" cellspacing="1" border="0">
@@ -50,7 +50,7 @@
     <tr class="<{cycle values="odd,even"}>">
         <td class="head" nowrap="nowrap" width="20%">
             <{$item.caption}>
-            <{if $item.show_desc !== ''}><br /><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
+            <{if $item.show_desc !== ''}><br><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
         </td>
         <td>
           <{if $bef_item_defs.$item_name.value != $item.value}><font color="red"><{/if}>
@@ -98,7 +98,7 @@
     <tr>
         <td class="head" nowrap="nowrap" width="20%">
             <{$item.caption}>
-            <{if $item.show_desc !== ''}><br /><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
+            <{if $item.show_desc !== ''}><br><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
         </td>
         <td class="<{cycle values="odd,even"}>">
             <{$item.value}>

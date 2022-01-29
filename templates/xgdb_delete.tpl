@@ -1,10 +1,10 @@
 <{if count($errors) > 0}>
 <div class="errorMsg">
     <{foreach item=error from=$errors}>
-    <{$error}><br />
+    <{$error}><br>
     <{/foreach}>
 </div>
-<br />
+<br>
 <{/if}>
 
 <table width="100%">
@@ -16,21 +16,21 @@
     <tr>
         <td width="50%" align="center">
             <form action="delete.php" method="post">
-                <input type="hidden" name="did" value="<{$item_defs.did.value}>" />
+                <input type="hidden" name="did" value="<{$item_defs.did.value}>">
                 <{$token}>
-                <input type="hidden" name="op" value="delete" />
-                <input type="submit" value="<{$_DELETE}>" />
+                <input type="hidden" name="op" value="delete">
+                <input type="submit" value="<{$_DELETE}>">
             </form>
         </td>
         <td width="50%" align="center">
             <form action="detail.php" method="get">
-                <input type="hidden" name="did" value="<{$item_defs.did.value}>" />
-                <input type="submit" value="<{$_CANCEL}>" />
+                <input type="hidden" name="did" value="<{$item_defs.did.value}>">
+                <input type="submit" value="<{$_CANCEL}>">
             </form>
         </td>
     </tr>
 </table>
-<br />
+<br>
 
 <table class="outer" cellpadding="1" cellspacing="1" border="0">
     <tr>
@@ -45,12 +45,12 @@
     <tr>
         <td class="head" nowrap="nowrap" width="20%">
             <{$item.caption}>
-            <{if $item.show_desc !== ''}><br /><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
+            <{if $item.show_desc !== ''}><br><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
         </td>
         <td class="<{cycle values="odd,even"}>">
             <{if $item.type == 'image'}>
             <{if $item.value != ''}>
-            <a href="download.php?did=<{$item_defs.did.value}>&amp;col_name=<{$item_name}>" rel="lightbox[01]"><img src="download.php?did=<{$item_defs.did.value}>&amp;col_name=<{$item_name}>" alt="<{$item.caption}>" width="<{$item.width}>px" /></a>
+            <a href="download.php?did=<{$item_defs.did.value}>&amp;col_name=<{$item_name}>" rel="lightbox[01]"><img src="download.php?did=<{$item_defs.did.value}>&amp;col_name=<{$item_name}>" alt="<{$item.caption}>" width="<{$item.width}>px"></a>
             <{/if}>
             <{elseif $item.type == 'file'}>
             <{if $item.value != ''}>

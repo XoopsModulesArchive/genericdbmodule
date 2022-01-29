@@ -3,37 +3,37 @@
     <tr>
         <td align="center">
             <form action="update.php" method="post">
-                <input type="hidden" name="did" value="<{$item_defs.did.value}>" />
-                <input type="submit" value="<{$_UPDATE}>" />
+                <input type="hidden" name="did" value="<{$item_defs.did.value}>">
+                <input type="submit" value="<{$_UPDATE}>">
             </form>
         </td>
         <td align="center">
             <form action="delete.php" method="post">
-                <input type="hidden" name="did" value="<{$item_defs.did.value}>" />
-                <input type="submit" value="<{$_DELETE}>" />
+                <input type="hidden" name="did" value="<{$item_defs.did.value}>">
+                <input type="submit" value="<{$_DELETE}>">
             </form>
         </td>
         <td align="center">
             <form action="index.php" method="post">
-                <input type="hidden" name="op" value="back_search" />
-                <input type="submit" value="<{$_BACK}>" />
+                <input type="hidden" name="op" value="back_search">
+                <input type="submit" value="<{$_BACK}>">
             </form>
         </td>
     </tr>
 </table>
-<br />
+<br>
 <{else}>
 <table width="100%">
     <tr>
         <td align="center">
             <form action="index.php" method="post">
-                <input type="hidden" name="op" value="back_search" />
-                <input type="submit" value="<{$_BACK}>" />
+                <input type="hidden" name="op" value="back_search">
+                <input type="submit" value="<{$_BACK}>">
             </form>
         </td>
     </tr>
 </table>
-<br />
+<br>
 <{/if}>
 
 <table class="outer" cellpadding="1" cellspacing="1" border="0">
@@ -49,12 +49,12 @@
     <tr>
         <td class="head" nowrap="nowrap" width="20%">
             <{$item.caption}>
-            <{if $item.show_desc !== ''}><br /><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
+            <{if $item.show_desc !== ''}><br><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
         </td>
         <td class="<{cycle values="odd,even"}>">
             <{if $item.type == 'image'}>
             <{if $item.value != ''}>
-            <a href="download.php?did=<{$item_defs.did.value}>&amp;col_name=<{$item_name}>" rel="lightbox[01]"><img src="download.php?did=<{$item_defs.did.value}>&amp;col_name=<{$item_name}>" alt="<{$item.caption}>" width="<{$item.width}>px" /></a>
+            <a href="download.php?did=<{$item_defs.did.value}>&amp;col_name=<{$item_name}>" rel="lightbox[01]"><img src="download.php?did=<{$item_defs.did.value}>&amp;col_name=<{$item_name}>" alt="<{$item.caption}>" width="<{$item.width}>px"></a>
             <{/if}>
             <{elseif $item.type == 'file'}>
             <{if $item.value != ''}>
@@ -68,7 +68,7 @@
     <{/if}>
     <{/foreach}>
 </table>
-<br />
+<br>
 
 <{if $his_perm}>
 <table class="outer" cellpadding="1" cellspacing="1" border="0" id="xgdb_his_show_table">
@@ -94,12 +94,12 @@
     </tr>
     <{/foreach}>
 </table>
-<br />
+<br>
 <{/if}>
 
 <{include file='db:system_notification_select.html'}>
 
-<br />
+<br>
 <{$commentsnav}>
 <center><{$lang_notice}></center>
 <{if $comment_mode == "flat"}>

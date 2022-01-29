@@ -3,10 +3,10 @@
 <{if count($errors) > 0}>
 <div class="errorMsg">
     <{foreach item=error from=$errors}>
-    <{$error}><br />
+    <{$error}><br>
     <{/foreach}>
 </div>
-<br />
+<br>
 <{/if}>
 
 <form name="form" action="" method="post">
@@ -23,7 +23,7 @@
             <td class="head" width="30%">
                 <{$item.caption}>
                 <{if $item.required}><{$_REQ_MARK}><{/if}>
-                <{if $item.input_desc !== ''}><br /><span style="font-weight: normal;"><{$item.input_desc}></span><{/if}>
+                <{if $item.input_desc !== ''}><br><span style="font-weight: normal;"><{$item.input_desc}></span><{/if}>
             </td>
             <td class="<{cycle values="odd,even"}>">
                 <{if $item_name == 'name'}>xgdb_<{/if}>
@@ -33,13 +33,13 @@
         </tr>
         <{/foreach}>
     </table>
-    <br />
+    <br>
     <div align="center">
-        <input type="hidden" name="op" value="add" />
-        <input type="hidden" name="type" value="<{$type}>" />
+        <input type="hidden" name="op" value="add">
+        <input type="hidden" name="type" value="<{$type}>">
         <{$token}>
-        <input type="submit" value="<{$_ADD}>" />
+        <input type="submit" value="<{$_ADD}>">
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="submit" name="cancel" value="<{$_CANCEL}>" />
+        <input type="submit" name="cancel" value="<{$_CANCEL}>">
     </div>
 </form>
