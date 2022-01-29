@@ -896,7 +896,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return Boolean True for integer values, false otherwise
      */
-    function is_intval($value)
+    function isInteger($value)
     {
         if (!isset($value) || '' === $value) {
             return false;
@@ -1111,7 +1111,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
                 if (isset($_POST[$item_name]) && '' !== $_POST[$item_name]) {
                     $ret = $_POST[$item_name];
                     // Whether it is an integer format
-                    if ('int' === $item_def['value_type'] && !is_intval($ret)) {
+                    if ('int' === $item_def['value_type'] && !isInteger($ret)) {
                         $errors[]                       = sprintf(getMDConst('_INT_ERR_MSG'), $item_def['caption']);
                         $item_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_INT_ERR_MSG'), $item_def['caption']);
                     } elseif ('float' === $item_def['value_type'] && !is_floatval($ret)) {
@@ -1286,7 +1286,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
                 // For numbers
                 if (isset($ret) && '' !== $ret) {
                     // Whether it is an integer format
-                    if ('int' === $search_defs[$item_name]['value_type'] && !is_intval($ret)) {
+                    if ('int' === $search_defs[$item_name]['value_type'] && !isInteger($ret)) {
                         $errors[]                         = sprintf(getMDConst('_INT_ERR_MSG'), $search_defs[$item_name]['caption']);
                         $search_defs[$item_name]['error'] = '<br>' . sprintf(getMDConst('_INT_ERR_MSG'), $search_defs[$item_name]['caption']);
                     } elseif ('float' === $search_defs[$item_name]['value_type'] && !is_floatval($ret)) {
