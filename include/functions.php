@@ -980,7 +980,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * Returns whether the item has a range.
      *
      * @param String $item_name Item name
-     * @return boolean True for items with a range, false for items without a range
+     * @return bool True for items with a range, false for items without a range
      */
     function isRangeItemName($item_name)
     {
@@ -1167,7 +1167,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
          * Check the date format.
          *
          * @param String $date Date
-         * @return boolean true if correct, false if incorrect
+         * @return bool true if correct, false if incorrect
          */
         function isValidDate($date)
         {
