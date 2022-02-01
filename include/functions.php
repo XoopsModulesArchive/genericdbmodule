@@ -932,11 +932,17 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
 
         if (false === mb_strpos($value, '.')) {
             return false;
-        } elseif (!is_numeric(mb_substr($value, -1))) {
+        }
+
+        if (!is_numeric(mb_substr($value, -1))) {
             return false;
-        } elseif (0 === mb_strpos($value, '.')) {
+        }
+
+        if (0 === mb_strpos($value, '.')) {
             return false;
-        } elseif (!is_numeric(mb_substr($value, mb_strpos($value, '.') - 1, 1))) {
+        }
+
+        if (!is_numeric(mb_substr($value, mb_strpos($value, '.') - 1, 1))) {
             return false;
         }
 
@@ -1360,7 +1366,9 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
 
         if ('update' === $key) {
             return getMDConst('_UPDATE');
-        } elseif ('delete' === $key) {
+        }
+
+        if ('delete' === $key) {
             return getMDConst('_DELETE');
         }
 
