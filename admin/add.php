@@ -10,7 +10,7 @@ if (isset($_POST['cancel'])) {
     header('Location: ' . $module_url . '/admin/');
 }
 
-if ('' == $type || !array_key_exists($type, $types)) {
+if ('' === $type || !array_key_exists($type, $types)) {
     redirect_header($module_url . '/admin/index.php', 5, $admin_consts['_DATA_TYPE_ERR_MSG']);
 }
 
@@ -41,7 +41,7 @@ if ('add' === $op) {
         }
     }
 
-    if (0 == count($errors)) {
+    if (0 === count($errors)) {
         if (checkColumnName($name)) {
             $res = $xoopsDB->query("SELECT * FROM $item_tbl WHERE name = 'xgdb_" . addslashes($name) . "'");
             if (0 < $xoopsDB->getRowsNum($res)) {
@@ -53,7 +53,7 @@ if ('add' === $op) {
             $item_defs['name']['error'] = '<br>' . sprintf(getAMConst('_NAME_ERR_MSG'), $item_defs['name']['caption']);
         }
 
-        if (0 == count($errors)) {
+        if (0 === count($errors)) {
             $sql = "INSERT INTO $item_tbl (`type`, ";
             foreach ($item_defs as $item_name => $item_def) {
                 $sql .= '`' . $item_name . '`, ';
