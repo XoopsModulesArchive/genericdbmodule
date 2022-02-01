@@ -34,7 +34,7 @@
                 <{if ($item.type == 'file' || $item.type == 'image') && $item.current_value && !$item.required}>
                 <label style="margin-left: 1em;"><input type="checkbox" name="delete_file_names[<{$item_name}>]" value="1"><{$_DELETE}></label>
                 <{/if}>
-                <font color="red"><{$item.error}></font>
+                <span style="color: red; "><{$item.error}></span>
             </td>
         </tr>
         <{/foreach}>

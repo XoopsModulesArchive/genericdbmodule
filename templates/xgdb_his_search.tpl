@@ -22,7 +22,7 @@
             <td class="<{cycle values="odd,even"}>">
                 <{$item.value}>
                 <{if $item.disp_cond}><{$item.condition}><{/if}>
-                <font color="red"><{$item.error}></font>
+                <span style="color: red; "><{$item.error}></span>
             </td>
         </tr>
         <{/if}>
@@ -86,6 +86,6 @@
 </table>
 <{elseif $op == 'search' && !isset($infos)}>
 <br>
-<center><{$_NOT_FOUND_MSG}></center>
+<div style="text-align: center;"><{$_NOT_FOUND_MSG}></div>
 <{/if}>
 <br>

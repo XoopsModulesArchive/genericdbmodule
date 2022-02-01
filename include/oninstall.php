@@ -172,15 +172,15 @@ if (!function_exists('xgdb_oninstall')) {
 
         $affix = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);
         if (!extension_loaded('mbstring')) {
-            $ret[] = '<font color="red">' . constant('_MI_' . $affix . '_MBSTRING_DISABLE_ERR') . '</font>';
+            $ret[] = '<span style="color: red; ">' . constant('_MI_' . $affix . '_MBSTRING_DISABLE_ERR') . '</span>';
         }
         if (extension_loaded('gd')) {
             $gd_infos = gd_info();
             if (!checkGDSupport()) {
-                $ret[] = '<font color="red">' . constant('_MI_' . $affix . '_GD_NOT_SUPPORTED_ERR') . '</font>';
+                $ret[] = '<span style="color: red; ">' . constant('_MI_' . $affix . '_GD_NOT_SUPPORTED_ERR') . '</span>';
             }
         } else {
-            $ret[] = '<font color="red">' . constant('_MI_' . $affix . '_GD_DISABLE_ERR') . '</font>';
+            $ret[] = '<span style="color: red; ">' . constant('_MI_' . $affix . '_GD_DISABLE_ERR') . '</span>';
         }
 
         return true;

@@ -101,7 +101,7 @@
 
 <br>
 <{$commentsnav}>
-<center><{$lang_notice}></center>
+<div style="text-align: center;"><{$lang_notice}></div>
 <{if $comment_mode == "flat"}>
     <{include file="db:system_comments_flat.html"}>
 <{elseif $comment_mode == "thread"}>

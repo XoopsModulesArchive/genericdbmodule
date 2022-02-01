@@ -8,7 +8,7 @@ require_once XOOPS_ROOT_PATH . "/modules/$dirname/language/$lang_dirname/common.
 
 $main_consts = [
     '_PAGENAVI_INFO'      => 'All %s, From %s To %s',
-    '_REQ_MARK'           => '<font color="red">(Req)</font>',
+    '_REQ_MARK'           => '<span style="color: red; ">(Req)</span>',
     '_SEARCH'             => 'Search',
     '_SEARCH_RESULT'      => 'Search Result',
     '_ADD_DATE'           => 'Add Date',

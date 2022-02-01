@@ -53,14 +53,14 @@
             <{if $item.show_desc !== ''}><br><span style="font-weight: normal; font-size: 80%;"><{$item.show_desc}></span><{/if}>
         </td>
         <td>
-          <{if $bef_item_defs.$item_name.value != $item.value}><font color="red"><{/if}>
+          <{if $bef_item_defs.$item_name.value != $item.value}><span style="color: red; "><{/if}>
           <{$bef_item_defs.$item_name.value}>
-          <{if $bef_item_defs.$item_name.value != $item.value}></font><{/if}>
+          <{if $bef_item_defs.$item_name.value != $item.value}></span><{/if}>
         </td>
         <td>
-          <{if $bef_item_defs.$item_name.value != $item.value}><font color="red"><{/if}>
+          <{if $bef_item_defs.$item_name.value != $item.value}><span style="color: red; "><{/if}>
           <{$item.value}>
-          <{if $bef_item_defs.$item_name.value != $item.value}></font><{/if}>
+          <{if $bef_item_defs.$item_name.value != $item.value}></span><{/if}>
         </td>
     </tr>
     <{/if}>

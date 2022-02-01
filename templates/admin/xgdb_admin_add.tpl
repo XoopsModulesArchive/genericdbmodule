@@ -28,7 +28,7 @@
             <td class="<{cycle values="odd,even"}>">
                 <{if $item_name == 'name'}>xgdb_<{/if}>
                 <{$item.value}>
-                <font color="red"><{$item.error}></font>
+                <span style="color: red; "><{$item.error}></span>
             </td>
         </tr>
         <{/foreach}>

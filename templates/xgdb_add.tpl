@@ -22,7 +22,7 @@
             </td>
             <td class="<{cycle values="odd,even"}>">
                 <{$item.value}>
-                <font color="red"><{$item.error}></font>
+                <span style="color: red; "><{$item.error}></span>
             </td>
         </tr>
         <{/if}>

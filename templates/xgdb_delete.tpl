@@ -10,7 +10,7 @@
 <table width="100%">
     <tr>
         <td colspan="2" align="center">
-            <font color="red"><{$_DELETE_CONFIRM_MSG}></font>
+            <span style="color: red; "><{$_DELETE_CONFIRM_MSG}></span>
         </td>
     </tr>
     <tr>
