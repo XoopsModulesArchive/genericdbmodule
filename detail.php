@@ -10,7 +10,7 @@ $GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_detail.tpl';
 $did = isset($_GET['did']) ? (int)$_GET['did'] : 0;
 $sql = "SELECT d.*, u.uname FROM $data_tbl AS d LEFT OUTER JOIN $users_tbl AS u ON d.add_uid = u.uid WHERE d.did = $did";
 $res = $xoopsDB->query($sql);
-if (0 == $xoopsDB->getRowsNum($res)) {
+if (0 === $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_NO_ERR_MSG'));
 }
 

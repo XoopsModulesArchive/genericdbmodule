@@ -84,7 +84,7 @@ if ('search' === $op || 'back_search' === $op) {
         }
     }
 
-    if (0 == count($errors)) {
+    if (0 === count($errors)) {
         $sql = 'SELECT d.*, u.uname';
         $sql .= " FROM $data_tbl AS d LEFT OUTER JOIN $users_tbl AS u ON d.add_uid = u.uid";
 
@@ -223,10 +223,10 @@ if ('search' === $op || 'back_search' === $op) {
                     }
                 } elseif ('tarea' === $item_defs[$key]['type'] || 'xtarea' === $item_defs[$key]['type']) {
                     $info[$key] = $myts->displayTarea($value, $item_defs[$key]['html'], $item_defs[$key]['smily'], $item_defs[$key]['xcode'], $item_defs[$key]['image'], $item_defs[$key]['br']);
-                } elseif ('image' === $item_defs[$key]['type'] && '' != $value) {
+                } elseif ('image' === $item_defs[$key]['type'] && '' !== $value) {
                     $item_defs[$key]['width'] = getImageWidth($module_upload_dir . '/' . getRealFileName($row['did'], $key, $value), $cfg_list_img_wd);
                     $info[$key]               = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5);
-                } elseif ('file' === $item_defs[$key]['type'] && '' != $value) {
+                } elseif ('file' === $item_defs[$key]['type'] && '' !== $value) {
                     $info[$key] = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5);
                 }
             }

@@ -40,7 +40,7 @@ if ('add' === $op) {
     }
 
     // If there is no error, registration process
-    if (0 == count($errors)) {
+    if (0 === count($errors)) {
         $datetime = date('Y-m-d H:i:s');
 
         $insert_data_sql = "INSERT INTO $data_tbl (add_uid, add_date, ";
@@ -95,7 +95,7 @@ if ('add' === $op) {
                 }
 
                 // When there is no error in file-related processing
-                if (0 == count($errors)) {
+                if (0 === count($errors)) {
                     $update_sql = mb_substr($update_sql, 0, -2) . " WHERE did = $did";
                     if (!$xoopsDB->query($update_sql)) {
                         $xoopsDB->query("DELETE FROM $main_tbl WHERE did = $did");

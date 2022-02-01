@@ -6,7 +6,7 @@ require_once dirname(__DIR__) . '/class/token.php';
 
 $op  = $_POST['op'] ?? '';
 $iid = isset($_POST['iid']) ? (int)$_POST['iid'] : 0;
-if ('' == $iid) {
+if ('' === $iid) {
     $iid = isset($_GET['iid']) ? (int)$_GET['iid'] : 0;
 }
 if (isset($_POST['cancel'])) {
@@ -17,7 +17,7 @@ if (1 > $iid) {
     redirect_header($module_url . '/admin/index.php', 5, getAMConst('_NO_ERR_MSG'));
 }
 $res = $xoopsDB->query("SELECT * FROM $item_tbl WHERE iid = $iid");
-if (0 == $xoopsDB->getRowsNum($res)) {
+if (0 === $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/admin/index.php', 5, getAMConst('_NO_ERR_MSG'));
 }
 $row = $xoopsDB->fetchArray($res);
@@ -50,7 +50,7 @@ if ('update' === $op) {
         }
     }
 
-    if (0 == count($errors)) {
+    if (0 === count($errors)) {
         $sql = "UPDATE $item_tbl SET ";
         foreach ($item_defs as $item_name => $item_def) {
             if ('name' === $item_name) {

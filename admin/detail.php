@@ -9,7 +9,7 @@ if (1 > $iid) {
     redirect_header($module_url . '/admin/index.php', 5, $admin_consts['_NO_ERR_MSG']);
 }
 $res = $xoopsDB->query("SELECT * FROM $item_tbl WHERE iid = " . $iid);
-if (0 == $xoopsDB->getRowsNum($res)) {
+if (0 === $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/admin/index.php', 5, $admin_consts['_NO_ERR_MSG']);
 }
 

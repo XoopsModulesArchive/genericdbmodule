@@ -26,7 +26,7 @@ $xoopsTpl->assign('op', htmlspecialchars($op, ENT_QUOTES | ENT_HTML5));
 $hid     = isset($_GET['hid']) ? (int)$_GET['hid'] : 0;
 $his_sql = "SELECT h.*, u.uname FROM $his_tbl AS h LEFT OUTER JOIN $users_tbl AS u ON h.update_uid = u.uid WHERE h.hid = $hid";
 $his_res = $xoopsDB->query($his_sql);
-if (0 == $xoopsDB->getRowsNum($his_res)) {
+if (0 === $xoopsDB->getRowsNum($his_res)) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_NO_ERR_MSG'));
 }
 

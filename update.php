@@ -14,7 +14,7 @@ if (isset($_POST['cancel'])) {
 // Existence check
 $sql = "SELECT d.*, u.uname FROM $data_tbl AS d LEFT OUTER JOIN $users_tbl AS u ON d.add_uid = u.uid WHERE d.did = $did";
 $res = $xoopsDB->query($sql);
-if (0 == $xoopsDB->getRowsNum($res)) {
+if (0 === $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_NO_ERR_MSG'));
 }
 
@@ -53,7 +53,7 @@ if ('update' === $op) {
     }
 
     // If there is no error, update process
-    if (0 == count($errors)) {
+    if (0 === count($errors)) {
         $datetime        = date('Y-m-d H:i:s');
         $update_data_sql = "UPDATE $data_tbl SET ";
         foreach ($update_item_defs as $item_name => $item_def) {

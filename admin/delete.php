@@ -5,7 +5,7 @@ require_once __DIR__ . '/include/common.php';
 
 $op  = $_POST['op'] ?? '';
 $iid = isset($_POST['iid']) ? (int)$_POST['iid'] : 0;
-if ('' == $iid) {
+if ('' === $iid) {
     $iid = isset($_GET['iid']) ? (int)$_GET['iid'] : 0;
 }
 
@@ -15,13 +15,13 @@ if (1 > $iid) {
 }
 $res = $xoopsDB->query("SELECT * FROM $item_tbl WHERE iid = " . $iid);
 $row = $xoopsDB->fetchArray($res);
-if (0 == $xoopsDB->getRowsNum($res)) {
+if (0 === $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/admin/index.php', 5, $admin_consts['_NO_ERR_MSG']);
 }
 
 if ('delete' === $op) {
     $res = $xoopsDB->query("SELECT * FROM $item_tbl");
-    if (1 == $xoopsDB->getRowsNum($res)) {
+    if (1 === $xoopsDB->getRowsNum($res)) {
         redirect_header($module_url . '/admin/detail.php?iid=' . $iid, 5, $admin_consts['_LAST_ERR_MSG']);
     } elseif (XoopsMultiTokenHandler::quickValidate($dirname . '_delete')) {
         if ($xoopsDB->query("DELETE FROM $item_tbl WHERE iid = $iid")) {

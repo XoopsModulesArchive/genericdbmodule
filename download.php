@@ -14,7 +14,7 @@ foreach ($item_defs as $item_name => $item_def) {
         $col_name = $_GET['col_name'];
     }
 }
-if (1 > $did || '' == $col_name) {
+if (1 > $did || '' === $col_name) {
     header('HTTP/1.1 404 Not Found');
     exit;
 }
@@ -26,13 +26,13 @@ if (!isset($item_defs[$col_name])) {
 
 $sql = "SELECT $col_name FROM $data_tbl WHERE did = $did";
 $res = $xoopsDB->query($sql);
-if (0 == $xoopsDB->getRowsNum($res)) {
+if (0 === $xoopsDB->getRowsNum($res)) {
     header('HTTP/1.1 404 Not Found');
     exit;
 }
 [$file_name] = $xoopsDB->fetchRow($res);
 $browser = getenv('HTTP_USER_AGENT');
-if (preg_match('/MSIE/i', $browser)) {
+if (false !== stripos($browser, "MSIE")) {
     $original_file_name = mb_convert_encoding($file_name, 'Shift_JIS', _CHARSET);
 } else {
     $original_file_name = mb_convert_encoding($file_name, 'UTF-8', _CHARSET);

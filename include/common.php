@@ -57,7 +57,7 @@ if ($cfg_auto_update) {
                 $mtime = (int)@filemtime($file_path);
                 $file  = $dirname . '_' . $file;
                 [$count] = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
-                if (0 == $count) {
+                if (0 === $count) {
                     updateTemplate($xoopsConfig['template_set'], $file, file_get_contents($file_path), $mtime);
                 }
             }
@@ -71,7 +71,7 @@ if ($cfg_auto_update) {
                 $mtime = (int)@filemtime($file_path);
                 $file  = $dirname . '_' . $file;
                 [$count] = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
-                if (0 == $count) {
+                if (0 === $count) {
                     updateTemplate($xoopsConfig['template_set'], $file, file_get_contents($file_path), $mtime);
                 }
             }

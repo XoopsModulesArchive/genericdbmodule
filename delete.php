@@ -11,13 +11,13 @@ $did = isset($_POST['did']) ? (int)$_POST['did'] : 0;
 // Existence check
 $sql = "SELECT d.*, u.uname FROM $data_tbl AS d LEFT OUTER JOIN $users_tbl AS u ON d.add_uid = u.uid WHERE d.did = $did";
 $res = $xoopsDB->query($sql);
-if (0 == $xoopsDB->getRowsNum($res)) {
+if (0 === $xoopsDB->getRowsNum($res)) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_NO_ERR_MSG'));
 }
 
 // Authorization check
 $row = $xoopsDB->fetchArray($res);
-if (!checkPerm($gids, $cfg_manage_gids) && $uid != $row['add_uid']) {
+if (!checkPerm($gids, $cfg_manage_gids) && $uid !== $row['add_uid']) {
     redirect_header($module_url . '/index.php', 5, getMDConst('_PERM_ERR_MSG'));
 }
 

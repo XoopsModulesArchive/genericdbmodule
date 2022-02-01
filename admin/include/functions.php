@@ -651,7 +651,7 @@ function getAdminItemDefs($type)
  */
 function checkColumnName($value)
 {
-    if ('' == $value) {
+    if ('' === $value) {
         return true;
     }
     if (preg_match('/^[a-z0-9_]+$/', $value)) {

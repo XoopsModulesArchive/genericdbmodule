@@ -479,7 +479,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      */
     function array2string($array, $sep = '|')
     {
-        if (!is_array($array) && '' == $array) {
+        if (!is_array($array) && '' === $array) {
             return '';
         }
         $ret = '';
@@ -487,7 +487,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
         foreach ($array as $value) {
             $ret .= $value . $sep;
         }
-        if ('' != $ret) {
+        if ('' !== $ret) {
             $ret = mb_substr($ret, 0, -1 * mb_strlen($sep));
         }
 
@@ -532,7 +532,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      */
     function string2array($string, $sep = '|')
     {
-        if ('' != $string) {
+        if ('' !== $string) {
             return explode($sep, $string);
         }
 
@@ -840,14 +840,14 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
 
         $sql = "SELECT * FROM $tplfile_tbl WHERE tpl_tplset = 'default' AND tpl_file = '" . addslashes($tpl_file) . "'";
         $res = $xoopsDB->query($sql);
-        if (0 == $xoopsDB->getRowsNum($res)) {
+        if (0 === $xoopsDB->getRowsNum($res)) {
             return;
         }
 
         $tpl_id_sql = "SELECT tpl_id FROM $tplfile_tbl WHERE tpl_tplset = '" . addslashes($tpl_set) . "' AND tpl_file = '" . addslashes($tpl_file) . "'";
         $tpl_id_res = $xoopsDB->query($tpl_id_sql);
 
-        if ('default' !== $tpl_set && 0 == $xoopsDB->getRowsNum($tpl_id_res)) {
+        if ('default' !== $tpl_set && 0 === $xoopsDB->getRowsNum($tpl_id_res)) {
             while (false !== ($row = $xoopsDB->fetchArray($res))) {
                 $xoopsDB->queryF("INSERT INTO $tplfile_tbl SET tpl_refid = '" . addslashes($row['tpl_refid']) . "',tpl_module = '" . addslashes($row['tpl_module']) . "',tpl_tplset = '" . addslashes($tpl_set) . "',tpl_file = '" . addslashes($tpl_file) . "',tpl_desc = '" . addslashes($row['tpl_desc']) . "',tpl_type = '" . addslashes($row['tpl_type']) . "'");
                 $tpl_id = $xoopsDB->getInsertId();
@@ -904,7 +904,9 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
 
         if (!is_numeric($value)) {
             return false;
-        } elseif (false !== mb_strpos($value, '.')) {
+        }
+
+        if (false !== mb_strpos($value, '.')) {
             return false;
         }
 
@@ -926,7 +928,9 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
 
         if (!is_numeric($value)) {
             return false;
-        } elseif (false === mb_strpos($value, '.')) {
+        }
+
+        if (false === mb_strpos($value, '.')) {
             return false;
         } elseif (!is_numeric(mb_substr($value, -1))) {
             return false;
@@ -1169,7 +1173,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
         function isValidDate($date)
         {
             $vals = explode('-', $date);
-            if (3 == count($vals)) {
+            if (3 === count($vals)) {
                 $year  = (int)$vals[0];
                 $month = (int)$vals[1];
                 $day   = (int)$vals[2];
@@ -1245,7 +1249,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
                     $item_defs[$key]['value'] = $myts->displayTarea($value, $item_defs[$key]['html'], $item_defs[$key]['smily'], $item_defs[$key]['xcode'], $item_defs[$key]['image'], $item_defs[$key]['br']);
                 } elseif ('image' === $item_defs[$key]['type']) {
                     $filename = $upload_dir . '/' . getRealFileName($row['did'], $key, $value);
-                    if ('' != $value && file_exists($filename)) {
+                    if ('' !== $value && file_exists($filename)) {
                         $item_defs[$key]['width'] = getImageWidth($filename, $cfg_main_img_wd);
                     }
                     $item_defs[$key]['value'] = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5);
@@ -1354,7 +1358,9 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
 
             if ('add' === $key) {
                 return getMDConst('_ADD');
-            } elseif ('update' === $key) {
+            }
+
+            if ('update' === $key) {
                 return getMDConst('_UPDATE');
             } elseif ('delete' === $key) {
                 return getMDConst('_DELETE');
