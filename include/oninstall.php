@@ -27,7 +27,7 @@ if (!function_exists('xgdb_oninstall')) {
         if (!mkdir($concurrentDirectory = XOOPS_UPLOAD_PATH . '/' . $dirname, 0777) && !is_dir($concurrentDirectory)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
         }
-        $file = fopen(XOOPS_UPLOAD_PATH . '/' . $dirname . '/.htaccess', 'w');
+        $file = fopen(XOOPS_UPLOAD_PATH . '/' . $dirname . '/.htaccess', 'wb');
         flock($file, LOCK_EX);
         //        fputs($file, 'SetEnvIf Referer "^' . XOOPS_URL . "/modules/" . $dirname . '/(.+\.php)?" ref_ok' . "\n");
         fwrite($file, "order deny,allow\n");
@@ -41,7 +41,7 @@ if (!function_exists('xgdb_oninstall')) {
         if (is_file($sql_file_path)) {
             $ret[] = 'SQL file found at <b>' . htmlspecialchars($sql_file_path, ENT_QUOTES | ENT_HTML5) . '</b>.<br> Creating tables...<br>';
             require_once XOOPS_ROOT_PATH . '/class/database/sqlutility.php';
-            $sql_query = fread(fopen($sql_file_path, 'r'), filesize($sql_file_path));
+            $sql_query = fread(fopen($sql_file_path, 'rb'), filesize($sql_file_path));
             $sql_query = trim($sql_query);
             SqlUtility::splitMySqlFile($pieces, $sql_query);
             $created_tables = [];

@@ -132,7 +132,7 @@ if (!function_exists('xgdb_onupdate')) {
 
         if (30 > $prev_version) {
             // Added direct link prohibition setting to upload directory
-            $file = fopen(XOOPS_UPLOAD_PATH . '/' . $dirname . '/.htaccess', 'w');
+            $file = fopen(XOOPS_UPLOAD_PATH . '/' . $dirname . '/.htaccess', 'wb');
             flock($file, LOCK_EX);
             fwrite($file, "order deny,allow\n");
             fwrite($file, "deny from all\n");

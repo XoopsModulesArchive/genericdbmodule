@@ -50,7 +50,7 @@ header("Content-Disposition: attachment; filename=\"$original_file_name\"");
 header('Content-Length: ' . filesize($filepath));
 header('Content-Type: application/octet-stream;');
 
-$fp = fopen($filepath, 'r');
+$fp = fopen($filepath, 'rb');
 while (!feof($fp)) {
     echo fgets($fp, 1024);
 }
