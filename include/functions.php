@@ -11,7 +11,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $default  initial value
      * @return String Text box input tag
      */
-    function makeTextForm(string $name, $item_def, $default)
+    function makeTextForm(string $name, array $item_def, string $default): string
     {
         $myts = MyTextSanitizer::getInstance();
 
@@ -28,7 +28,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param array  $defaults initial value
      * @return String Checkbox input tag
      */
-    function makeCboxForm(string $name, $item_def, $defaults)
+    function makeCboxForm(string $name, array $item_def, array $defaults): string
     {
         $myts = MyTextSanitizer::getInstance();
 
@@ -65,7 +65,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $default  initial value
      * @return String Radio button input tag
      */
-    function makeRadioForm($name, $item_def, $default)
+    function makeRadioForm(string $name, array $item_def, string $default): string
     {
         $myts = MyTextSanitizer::getInstance();
 
@@ -97,7 +97,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $default  initial value
      * @return String Select tag of pull-down menu
      */
-    function makeSelectForm($name, $item_def, $default)
+    function makeSelectForm(string $name, array $item_def, string $default): string
     {
         global $affix;
         $myts = MyTextSanitizer::getInstance();
@@ -126,7 +126,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param array  $defaults initial value
      * @return String Listbox select tag
      */
-    function makeMSelectForm($name, $item_def, $defaults)
+    function makeMSelectForm(string $name, array $item_def, array $defaults): string
     {
         $myts = MyTextSanitizer::getInstance();
 
@@ -155,7 +155,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $default  initial value
      * @return String Textarea tag for text area
      */
-    function makeTAreaForm($name, $item_def, $default)
+    function makeTAreaForm(string $name, array $item_def, string $default): string
     {
         $myts = MyTextSanitizer::getInstance();
 
@@ -172,7 +172,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $default  initial value
      * @return String BB code compatible text area textarea tag
      */
-    function makeXTAreaForm($name, $item_def, $default)
+    function makeXTAreaForm(string $name, array $item_def, string $default): string
     {
         $myts = MyTextSanitizer::getInstance();
 
@@ -190,7 +190,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $default  initial value
      * @return String Date input tag
      */
-    function makeDateForm($name, $item_def, $default)
+    function makeDateForm(string $name, array $item_def, string $default): string
     {
         $myts = MyTextSanitizer::getInstance();
 
@@ -207,7 +207,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param array  $item_def Item definition information
      * @return String File upload input
      */
-    function makeFileForm($name, $item_def)
+    function makeFileForm(string $name, array $item_def): string
     {
         $myts = MyTextSanitizer::getInstance();
         $ret  = '<input type="file" name="' . htmlspecialchars($name, ENT_QUOTES | ENT_HTML5) . '" size="' . (int)$item_def['size'] . ' maxlength="' . (int)$item_def['max_length'] . '" >';
@@ -223,7 +223,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $default initial value
      * @return String Radio button input tag
      */
-    function makeCondForm($name, $options, $default)
+    function makeCondForm(string $name, array $options, string $default): string
     {
         global $affix;
         $myts = MyTextSanitizer::getInstance();
@@ -246,7 +246,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return String Group name and group ID string used for the group select box
      */
-    function makeGroupSelectOptions()
+    function makeGroupSelectOptions(): string
     {
         $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
         $ret     = '';
@@ -278,7 +278,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $gidstring List of group ID strings
      * @return String Group name string with line breaks
      */
-    function gidstring2brgroup($gidstring)
+    function gidstring2brgroup(string $gidstring): string
     {
         if (!isset($gidstring) || '' === $gidstring) {
             return '';
@@ -316,7 +316,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $target_dirpath Full directory path
      * @return String File name (not including directory path)
      */
-    function getUniqueFileName($ext, $target_dirpath)
+    function getUniqueFileName(string $ext, string $target_dirpath): string
     {
         $file_name = md5(XOOPS_SALT . uniqid(mt_rand(), true)) . '.' . $ext;
         if (file_exists($target_dirpath . $file_name)) {
@@ -333,7 +333,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $max_image_size Maximum file size (px)
      * @return String The extension of the resized file. Blank text if not resized字
      */
-    function resizeImage($file_name, $max_image_size)
+    function resizeImage(string $file_name, string $max_image_size)
     {
         if (!extension_loaded('gd')) {
             return '';
@@ -420,7 +420,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param array $perm_groups An array of group IDs for privileged groups
      * @return Boolean True if authorized, false otherwise
      */
-    function checkPerm($user_groups, $perm_groups)
+    function checkPerm(array $user_groups, array $perm_groups)
     {
         foreach ($user_groups as $gid) {
             if (in_array($gid, $perm_groups, true)) {
@@ -477,7 +477,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return String
      */
-    function array2string($array, $sep = '|')
+    function array2string(array $array, string $sep = '|'): string
     {
         if (!is_array($array) && '' === $array) {
             return '';
@@ -501,7 +501,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return String Line feed delimiter string
      */
-    function array2brstring($array)
+    function array2brstring(array $array): string
     {
         $ret = '';
 
@@ -530,7 +530,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return Array
      */
-    function string2array($string, $sep = '|')
+    function string2array(string $string, string $sep = '|'): array
     {
         if ('' !== $string) {
             return explode($sep, $string);
@@ -547,7 +547,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return Array
      */
-    function nl2array($string, $sep = '|')
+    function nl2array(string $string, string $sep = '|'): array
     {
         if ('' === $string) {
             return [];
@@ -588,7 +588,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $as   xgdb item Table alias
      * @return String WHERE clause of group ID
      */
-    function makeWhereGID($gids, $as = '')
+    function makeWhereGID(array $gids, string $as = ''): string
     {
         $ret = '(';
 
@@ -613,7 +613,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param mixed $gids
      * @return array Array of item information
      */
-    function getItemDefs($dirname, $gids)
+    function getItemDefs($dirname, $gids): array
     {
         //global $gids;
         $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
@@ -715,7 +715,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return Array Array of item information
      */
-    function getDefs($defs, $type)
+    function getDefs(array $defs, string $type): array
     {
         global $cfg_id_caption;
         $ret = [];
@@ -781,7 +781,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return String Sanitized argument value
      */
-    function sanitize($value, $item_def, $number_format = true)
+    function sanitize(?string $value, array $item_def, bool $number_format = true)
     {
         if ('' === $value || null === $value) {
             return '';
@@ -831,7 +831,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string  $tpl_source   Contents of the source code of the template file
      * @param Integer $lastmodified Timestamp of last update date
      */
-    function updateTemplate($tpl_set, $tpl_file, $tpl_source, $lastmodified = 0)
+    function updateTemplate(string $tpl_set, string $tpl_file, string $tpl_source, int $lastmodified = 0)
     {
         require_once XOOPS_ROOT_PATH . '/class/template.php';
         $xoopsDB       = XoopsDatabaseFactory::getDatabaseConnection();
@@ -872,7 +872,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return String Range of minimum and maximum values
      */
-    function getRangeText($value_range_min, $value_range_max)
+    function getRangeText(string $value_range_min, string $value_range_max): string
     {
         global $affix;
         $ret = '';
@@ -896,7 +896,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return Boolean True for integer values, false otherwise
      */
-    function isInteger($value)
+    function isInteger(string $value): bool
     {
         if (!isset($value) || '' === $value) {
             return false;
@@ -920,7 +920,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return Boolean True for fractional numbers, false otherwise
      */
-    function isFloat($value)
+    function isFloat(string $value): bool
     {
         if (!isset($value) || '' === $value) {
             return false;
@@ -957,7 +957,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $file_name File name on the table
      * @return String Saved file name
      */
-    function getRealFileName($did, $col_name, $file_name)
+    function getRealFileName(string $did, string $col_name, string $file_name): string
     {
         return urlencode("$did-$col_name-$file_name");
     }
@@ -969,7 +969,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $cfg_width Image file width setting
      * @return int Image file width
      */
-    function getImageWidth($filename, $cfg_width)
+    function getImageWidth(string $filename, string $cfg_width)
     {
         [
             $x,
@@ -992,7 +992,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $item_name Item name
      * @return bool True for items with a range, false for items without a range
      */
-    function isRangeItemName($item_name)
+    function isRangeItemName(string $item_name): bool
     {
         if (8 < mb_strlen($item_name)) {
             if ('_or_over' === mb_substr($item_name, -8) || '_or_less' === mb_substr($item_name, -8)) {
@@ -1009,7 +1009,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param array $item_def Item definition information
      * @return int -1：Less than, 0: in range, 1: over
      */
-    function checkNumberRange($item_def, $value)
+    function checkNumberRange(array $item_def, $value): int
     {
         if ('int' === $item_def['value_type']) {
             if (isset($item_def['value_range_min']) && '' !== $item_def['value_range_min']) {
@@ -1040,7 +1040,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $const_name Constant name
      * @return String Constant value
      */
-    function getMDConst($const_name)
+    function getMDConst(string $const_name): string
     {
         global $affix;
 
@@ -1052,7 +1052,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @param array  &$item_defs Array of item definition information
      */
-    function makeInputForms(&$item_defs)
+    function makeInputForms(array &$item_defs)
     {
         foreach ($item_defs as $item_name => $item_def) {
             if ('text' === $item_def['type'] || 'number' === $item_def['type']) {
@@ -1088,7 +1088,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string  $type               Processing type
      * @return mixed|string
      */
-    function initInput($item_def, $item_name, &$item_defs, &$uploaded_file_defs, &$errors, $type)
+    function initInput(array $item_def, string $item_name, array &$item_defs, array &$uploaded_file_defs, array &$errors, string $type)
     {
         $myts = MyTextSanitizer::getInstance();
 
@@ -1174,7 +1174,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param string $date Date
      * @return bool true if correct, false if incorrect
      */
-    function isValidDate($date)
+    function isValidDate(string $date): bool
     {
         $vals = explode('-', $date);
         if (3 === count($vals)) {
@@ -1197,7 +1197,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param array        $errors    Array of error messages
      * @param int          $did       Data ID to exclude
      */
-    function checkDuplicate($value, $item_name, &$item_defs, &$errors, $did = 0)
+    function checkDuplicate($value, string $item_name, array &$item_defs, array &$errors, int $did = 0)
     {
         global $data_tbl;
         $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
@@ -1228,7 +1228,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param array  &$item_defs      Array of item definition information
      * @param string  $target_dirname Module directory name
      */
-    function assignDetail($row, &$item_defs, $target_dirname)
+    function assignDetail(array $row, array &$item_defs, string $target_dirname)
     {
         global $cfg_date_format, $cfg_time_format, $cfg_main_img_wd, $dirname;
         $myts       = MyTextSanitizer::getInstance();
@@ -1272,7 +1272,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param array  &$errors      Array of error message
      * @return string
      */
-    function initSearchInput($op, $item_name, &$search_defs, &$errors)
+    function initSearchInput(string $op, string $item_name, array &$search_defs, array &$errors): string
     {
         $ret = '';
         if ('search' === $op) {
@@ -1321,7 +1321,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param $did
      * @return array
      */
-    function getHistories($did)
+    function getHistories($did): array
     {
         global $his_tbl, $cfg_date_format, $cfg_time_format;
         $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
@@ -1354,7 +1354,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      * @param $key
      * @return string
      */
-    function getOperation($key)
+    function getOperation($key): string
     {
         if ('trans' === $key) {
             return getMDConst('_TRANS');
@@ -1378,7 +1378,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
     /**
      * @return array
      */
-    function getHisSearchDefs()
+    function getHisSearchDefs(): array
     {
         $ret = [];
 
@@ -1480,7 +1480,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @return Boolean true if GD (gif, jpeg, png) is supported, false otherwise
      */
-    function checkGDSupport()
+    function checkGDSupport(): bool
     {
         $gd_infos = gd_info();
         if (!$gd_infos['GIF Read Support'] || !$gd_infos['GIF Create Support']) {
