@@ -777,7 +777,7 @@ if (!defined('_XGDB_FUNCTIONS_INCLUDED')) {
      *
      * @param string|null $value         Value to be sanitized
      * @param array       $item_def      Project information
-     * @param boolean     $number_format Numeric format format
+     * @param bool        $number_format Numeric format format
      *
      * @return String Sanitized argument value
      */
