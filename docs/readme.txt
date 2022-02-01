@@ -19,4 +19,4 @@ http://xoopscube.jp/module/release/908/download?__t=4e8ebf6975b52fa926df9c35f084
 News in japanese
 http://xoopscube.jp/module/release/908
 
-The last version was 0.5 released in march 2011
+The last version was 0.5 released in March 2011

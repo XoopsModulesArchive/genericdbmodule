@@ -1,9 +1,11 @@
 <?php
 
+$dirname                                 = basename(__DIR__);
+$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_his_search.tpl';
+
 require_once dirname(__DIR__, 2) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/header.php';
 require_once __DIR__ . '/include/common.php';
-$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_his_search.tpl';
 
 if (isset($_POST['op'])) {
     $op = $_POST['op'];

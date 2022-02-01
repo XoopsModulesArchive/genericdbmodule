@@ -32,7 +32,7 @@ if (0 === $xoopsDB->getRowsNum($res)) {
 }
 [$file_name] = $xoopsDB->fetchRow($res);
 $browser = getenv('HTTP_USER_AGENT');
-if (false !== stripos($browser, "MSIE")) {
+if (false !== stripos($browser, 'MSIE')) {
     $original_file_name = mb_convert_encoding($file_name, 'Shift_JIS', _CHARSET);
 } else {
     $original_file_name = mb_convert_encoding($file_name, 'UTF-8', _CHARSET);

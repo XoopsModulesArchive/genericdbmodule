@@ -17,9 +17,8 @@ if (!function_exists('xgdb_oninstall')) {
     function xgdb_oninstall($module, $dirname)
     {
         global $ret, $xoopsConfig, $xoopsUser;
-        if (!is_array($ret)) {
-            $ret = [];
-        }
+
+        $ret           = [];
         $myts          = MyTextSanitizer::getInstance();
         $xoopsDB       = XoopsDatabaseFactory::getDatabaseConnection();
         $tplfile_tbl   = $xoopsDB->prefix('tplfile');
@@ -82,7 +81,7 @@ if (!function_exists('xgdb_oninstall')) {
         if ($dirHandler = @opendir($template_dir . '/')) {
             $ret[] = 'Adding templates...<br>';
             while (false !== ($template_file = readdir($dirHandler))) {
-                if ('.' === mb_substr($template_file, 0, 1)) {
+                if (0 === mb_strpos($template_file, '.')) {
                     continue;
                 }
 

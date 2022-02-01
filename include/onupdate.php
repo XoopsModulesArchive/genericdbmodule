@@ -38,7 +38,7 @@ if (!function_exists('xgdb_onupdate')) {
         $msgs[] = 'Updating templates...';
         if ($dirHandler = @opendir($template_dir . '/')) {
             while (false !== ($template_file = readdir($dirHandler))) {
-                if ('.' === mb_substr($template_file, 0, 1)) {
+                if (0 === mb_strpos($template_file, '.')) {
                     continue;
                 }
 
@@ -176,7 +176,7 @@ if (!function_exists('xgdb_onupdate')) {
                 $xoopsDB->query("UPDATE `$item_tbl` SET type = 'number' WHERE name = '" . addslashes($col_name) . "'");
             }
 
-            // Convert text box type type with character string to text box (character string) type
+            // Convert text box type with character string to text box (character string) type
             $res_item = $xoopsDB->query("SELECT name FROM $item_tbl WHERE type = 'text' AND value_type = 'string'");
             while ([$col_name] = $xoopsDB->fetchRow($res_item)) {
                 $xoopsDB->query("UPDATE `$item_tbl` SET value_type = NULL WHERE name = '" . addslashes($col_name) . "'");

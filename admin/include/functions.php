@@ -9,7 +9,7 @@ require_once XOOPS_ROOT_PATH . '/modules/' . $dirname . '/include/functions.php'
  *
  * @return array Array of item information
  */
-function getAdminItemDefs($type)
+function getAdminItemDefs(string $type)
 {
     $dirname = basename(dirname(__DIR__, 2));
     $affix   = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);
@@ -649,7 +649,7 @@ function getAdminItemDefs($type)
  *
  * @return bool true if only single-byte alphanumericals (lowercase letters) and underscores, false otherwise
  */
-function checkColumnName($value)
+function checkColumnName(string $value)
 {
     if ('' === $value) {
         return true;
@@ -667,7 +667,7 @@ function checkColumnName($value)
  * @param string $const_name Constant name
  * @return string Constant value
  */
-function getAMConst($const_name)
+function getAMConst(string $const_name)
 {
     $dirname = basename(dirname(__DIR__, 2));
     $affix   = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);

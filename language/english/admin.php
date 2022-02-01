@@ -50,7 +50,7 @@ $admin_consts = [
     '_ROWS'                    => 'Height Of Text Area',
     '_COLS'                    => 'Width of Text Area',
     '_HTML'                    => 'HTML Use',
-    '_HTML_WARN'               => '<font color="red">Attention! When this is enable, there are risk of Script Insertion Attack.</font>',
+    '_HTML_WARN'               => '<font color="red">Attention! When this is enabled, there are risk of Script Insertion Attack.</font>',
     '_SMILY'                   => 'BB Code Smily Tag',
     '_XCODE'                   => 'BB Code Xoops Tag',
     '_IMAGE'                   => 'BB Code Image Tag',

@@ -1,10 +1,12 @@
 <?php
 
+$dirname                                 = basename(__DIR__);
+$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_detail.tpl';
+
 require_once dirname(__DIR__, 2) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/header.php';
 require XOOPS_ROOT_PATH . '/include/comment_view.php';
 require_once __DIR__ . '/include/common.php';
-$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_detail.tpl';
 
 // Existence check
 $did = isset($_GET['did']) ? (int)$_GET['did'] : 0;

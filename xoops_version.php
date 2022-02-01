@@ -3,7 +3,7 @@
 $dirname = basename(__DIR__);
 $affix   = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);
 
-// Basic informations
+// Basic information
 $modversion['name']        = constant('_MI_' . $affix . '_MODULE_NAME');
 $modversion['version']     = 0.6;
 $modversion['description'] = constant('_MI_' . $affix . '_MODULE_DESC');
@@ -45,6 +45,7 @@ if (!isset($moduleHandler)) {
 $xgdbModule = $moduleHandler->getByDirname($dirname);
 $menucount  = 0;
 if (false !== $xgdbModule) {
+    /** @var \XoopsConfigHandler $configHandler */
     if (!isset($configHandler)) {
         $configHandler = xoops_getHandler('config');
     }
@@ -85,26 +86,29 @@ if (false !== $xgdbModule) {
 // Templates
 
 // General settings
-$modversion['config'][] = ['name'        => $dirname . '_loaded_jq',
-                           'title'       => '_MI_' . $affix . '_LOADED_JQ',
-                           'description' => '',
-                           'formtype'    => 'yesno',
-                           'valuetype'   => 'int',
-                           'default'     => '0',
+$modversion['config'][] = [
+    'name'        => $dirname . '_loaded_jq',
+    'title'       => '_MI_' . $affix . '_LOADED_JQ',
+    'description' => '',
+    'formtype'    => 'yesno',
+    'valuetype'   => 'int',
+    'default'     => '0',
 ];
-$modversion['config'][] = ['name'        => $dirname . '_id_caption',
-                           'title'       => '_MI_' . $affix . '_ID_CAPTION',
-                           'description' => '',
-                           'formtype'    => 'textbox',
-                           'valuetype'   => 'text',
-                           'default'     => 'ID',
+$modversion['config'][] = [
+    'name'        => $dirname . '_id_caption',
+    'title'       => '_MI_' . $affix . '_ID_CAPTION',
+    'description' => '',
+    'formtype'    => 'textbox',
+    'valuetype'   => 'text',
+    'default'     => 'ID',
 ];
-$modversion['config'][] = ['name'        => $dirname . '_result_num',
-                           'title'       => '_MI_' . $affix . '_SEARCH_NUM',
-                           'description' => '',
-                           'formtype'    => 'textbox',
-                           'valuetype'   => 'int',
-                           'default'     => '10',
+$modversion['config'][] = [
+    'name'        => $dirname . '_result_num',
+    'title'       => '_MI_' . $affix . '_SEARCH_NUM',
+    'description' => '',
+    'formtype'    => 'textbox',
+    'valuetype'   => 'int',
+    'default'     => '10',
 ];
 $modversion['config'][] = [
     'name'        => $dirname . '_date_format',
@@ -130,33 +134,37 @@ $modversion['config'][] = [
     'valuetype'   => 'array',
     'default'     => ['1'],
 ];
-$modversion['config'][] = ['name'        => $dirname . '_add_gids',
-                           'title'       => '_MI_' . $affix . '_ADD_GROUPS',
-                           'description' => '',
-                           'formtype'    => 'group_multi',
-                           'valuetype'   => 'array',
-                           'default'     => ['1'],
+$modversion['config'][] = [
+    'name'        => $dirname . '_add_gids',
+    'title'       => '_MI_' . $affix . '_ADD_GROUPS',
+    'description' => '',
+    'formtype'    => 'group_multi',
+    'valuetype'   => 'array',
+    'default'     => ['1'],
 ];
-$modversion['config'][] = ['name'        => $dirname . '_add_guest',
-                           'title'       => '_MI_' . $affix . '_ADD_GUEST',
-                           'description' => '',
-                           'formtype'    => 'yesno',
-                           'valuetype'   => 'int',
-                           'default'     => '0',
+$modversion['config'][] = [
+    'name'        => $dirname . '_add_guest',
+    'title'       => '_MI_' . $affix . '_ADD_GUEST',
+    'description' => '',
+    'formtype'    => 'yesno',
+    'valuetype'   => 'int',
+    'default'     => '0',
 ];
-$modversion['config'][] = ['name'        => $dirname . '_his_gids',
-                           'title'       => '_MI_' . $affix . '_HIS_GROUPS',
-                           'description' => '',
-                           'formtype'    => 'group_multi',
-                           'valuetype'   => 'array',
-                           'default'     => ['1'],
+$modversion['config'][] = [
+    'name'        => $dirname . '_his_gids',
+    'title'       => '_MI_' . $affix . '_HIS_GROUPS',
+    'description' => '',
+    'formtype'    => 'group_multi',
+    'valuetype'   => 'array',
+    'default'     => ['1'],
 ];
-$modversion['config'][] = ['name'        => $dirname . '_his_guest',
-                           'title'       => '_MI_' . $affix . '_HIS_GUEST',
-                           'description' => '',
-                           'formtype'    => 'yesno',
-                           'valuetype'   => 'int',
-                           'default'     => '0',
+$modversion['config'][] = [
+    'name'        => $dirname . '_his_guest',
+    'title'       => '_MI_' . $affix . '_HIS_GUEST',
+    'description' => '',
+    'formtype'    => 'yesno',
+    'valuetype'   => 'int',
+    'default'     => '0',
 ];
 $modversion['config'][] = [
     'name'        => $dirname . '_auto_update',
@@ -166,19 +174,21 @@ $modversion['config'][] = [
     'valuetype'   => 'int',
     'default'     => '0',
 ];
-$modversion['config'][] = ['name'        => $dirname . '_main_img_wd',
-                           'title'       => '_MI_' . $affix . '_DETAIL_IMAGE_WIDTH',
-                           'description' => '',
-                           'formtype'    => 'textbox',
-                           'valuetype'   => 'int',
-                           'default'     => '300',
+$modversion['config'][] = [
+    'name'        => $dirname . '_main_img_wd',
+    'title'       => '_MI_' . $affix . '_DETAIL_IMAGE_WIDTH',
+    'description' => '',
+    'formtype'    => 'textbox',
+    'valuetype'   => 'int',
+    'default'     => '300',
 ];
-$modversion['config'][] = ['name'        => $dirname . '_list_img_wd',
-                           'title'       => '_MI_' . $affix . '_LIST_IMAGE_WIDTH',
-                           'description' => '',
-                           'formtype'    => 'textbox',
-                           'valuetype'   => 'int',
-                           'default'     => '50',
+$modversion['config'][] = [
+    'name'        => $dirname . '_list_img_wd',
+    'title'       => '_MI_' . $affix . '_LIST_IMAGE_WIDTH',
+    'description' => '',
+    'formtype'    => 'textbox',
+    'valuetype'   => 'int',
+    'default'     => '50',
 ];
 
 // Blocks

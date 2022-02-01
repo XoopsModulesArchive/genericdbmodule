@@ -2,9 +2,11 @@
 
 $dirname = basename(dirname(__DIR__));
 
-eval('function ' . $dirname . '_xgdb_search($keywords, $andor, $limit, $offset, $userid){
+eval(
+    'function ' . $dirname . '_xgdb_search($keywords, $andor, $limit, $offset, $userid){
 	return xgdb_search("' . $dirname . '", $keywords, $andor, $limit, $offset, $userid);
-}');
+}'
+);
 
 if (!function_exists('xgdb_search')) {
     /**

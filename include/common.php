@@ -53,7 +53,7 @@ if ($cfg_auto_update) {
     if ($handler = @opendir($template_dir_path . '/')) {
         while (false !== ($file = readdir($handler))) {
             $file_path = $template_dir_path . '/' . $file;
-            if (is_file($file_path) && '.tpl' === mb_substr($file, -4) && ('index.html' !== $file || 'index.php' !== $file)) {
+            if (is_file($file_path) && '.tpl' === mb_substr($file, -4)) {
                 $mtime = (int)@filemtime($file_path);
                 $file  = $dirname . '_' . $file;
                 [$count] = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));
@@ -67,7 +67,7 @@ if ($cfg_auto_update) {
     if ($handler = @opendir($template_dir_path . '/blocks/')) {
         while (false !== ($file = readdir($handler))) {
             $file_path = $template_dir_path . '/blocks/' . $file;
-            if (is_file($file_path) && '.tpl' === mb_substr($file, -4) && ('index.html' !== $file || 'index.php' !== $file)) {
+            if (is_file($file_path) && '.tpl' === mb_substr($file, -4)) {
                 $mtime = (int)@filemtime($file_path);
                 $file  = $dirname . '_' . $file;
                 [$count] = $xoopsDB->fetchRow($xoopsDB->query('SELECT COUNT(*) FROM ' . $xoopsDB->prefix('tplfile') . " WHERE tpl_tplset = '" . addslashes($xoopsConfig['template_set']) . "' AND tpl_file = '" . addslashes($file) . "' AND tpl_lastmodified >= $mtime"));

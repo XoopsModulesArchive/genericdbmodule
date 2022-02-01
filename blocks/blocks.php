@@ -16,7 +16,7 @@ if (!function_exists('xgdb_new_show')) {
      * @param $options
      * @return array
      */
-    function xgdb_new_show($dirname, $options)
+    function xgdb_new_show($dirname, $options): array
     {
         global $xoopsConfig, $xoopsUser;
         $block = [];
@@ -60,7 +60,7 @@ if (!function_exists('xgdb_new_edit')) {
      * @param $options
      * @return string
      */
-    function xgdb_new_edit($dirname, $options)
+    function xgdb_new_edit($dirname, $options): string
     {
         $affix    = mb_strtoupper(3 <= mb_strlen($dirname) ? mb_substr($dirname, 0, 3) : $dirname);
         $list_num = empty($options[0]) ? 0 : (int)$options[0];

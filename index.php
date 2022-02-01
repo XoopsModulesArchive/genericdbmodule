@@ -1,12 +1,11 @@
 <?php
 
-$moduleDirName = basename(__DIR__);
+$moduleDirName                           = basename(__DIR__);
 $GLOBALS['xoopsOption']['template_main'] = $moduleDirName . '_xgdb_index.tpl';
 
 require_once dirname(__DIR__, 2) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/header.php';
 require_once __DIR__ . '/include/common.php';
-
 
 if (isset($_POST['op'])) {
     $op = $_POST['op'];

@@ -17,9 +17,9 @@ if (!function_exists('xgdb_onuninstall')) {
     function xgdb_onuninstall($module, $dirname)
     {
         global $ret;
-        if (!is_array($ret)) {
-            $ret = [];
-        }
+
+        $ret = [];
+
         $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
         $mid     = $module->getVar('mid');
 

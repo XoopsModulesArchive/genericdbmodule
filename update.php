@@ -1,9 +1,11 @@
 <?php
 
+$dirname                                 = basename(__DIR__);
+$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_update.tpl';
+
 require_once dirname(__DIR__, 2) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/header.php';
 require_once __DIR__ . '/include/common.php';
-$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_update.tpl';
 
 $op  = $_POST['op'] ?? '';
 $did = isset($_POST['did']) ? (int)$_POST['did'] : 0;
@@ -82,9 +84,9 @@ if ('update' === $op) {
             } elseif (('cbox' === $item_def['type'] || 'mselect' === $item_def['type']) && is_array($$item_name)) {
                 $update_data_sql .= $item_name . " = '" . addslashes(array2string($$item_name)) . "', ";
             } elseif ('' === $$item_name) {
-                    $update_data_sql .= $item_name . ' = NULL, ';
-                } else {
-                    $update_data_sql .= $item_name . " = '" . addslashes($$item_name) . "', ";
+                $update_data_sql .= $item_name . ' = NULL, ';
+            } else {
+                $update_data_sql .= $item_name . " = '" . addslashes($$item_name) . "', ";
             }
         }
         $update_data_sql = mb_substr($update_data_sql, 0, -2) . " WHERE did = $did";
@@ -112,14 +114,14 @@ if ('update' === $op) {
                     } elseif (('cbox' === $item_def['type'] || 'mselect' === $item_def['type']) && is_array($$item_name)) {
                         $insert_his_sql .= ", '" . addslashes(array2string($$item_name)) . "'";
                     } elseif ('' === $$item_name) {
-                            $insert_his_sql .= ', NULL';
-                        } else {
-                            $insert_his_sql .= ", '" . addslashes($$item_name) . "'";
-                    }
-                } elseif ('' !== $row[$item_name]) {
                         $insert_his_sql .= ', NULL';
                     } else {
-                        $insert_his_sql .= ", '" . $row[$item_name] . "'";
+                        $insert_his_sql .= ", '" . addslashes($$item_name) . "'";
+                    }
+                } elseif ('' !== $row[$item_name]) {
+                    $insert_his_sql .= ', NULL';
+                } else {
+                    $insert_his_sql .= ", '" . $row[$item_name] . "'";
                 }
             }
             $insert_his_sql .= ')';

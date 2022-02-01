@@ -1,10 +1,12 @@
 <?php
 
+$dirname                                 = basename(__DIR__);
+$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_add.tpl';
+
 require_once dirname(__DIR__, 2) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/header.php';
 require_once __DIR__ . '/include/common.php';
 require_once __DIR__ . '/class/token.php';
-$GLOBALS['xoopsOption']['template_main'] = $dirname . '_xgdb_add.tpl';
 
 // Authorization check
 if ($uid && !checkPerm($gids, $cfg_add_gids)) {
@@ -58,11 +60,11 @@ if ('add' === $op) {
                 $insert_data_sql .= "'" . addslashes(array2string($$item_name)) . "', ";
                 $insert_his_sql  .= "'" . addslashes(array2string($$item_name)) . "', ";
             } elseif ('' === $$item_name) {
-                    $insert_data_sql .= 'NULL, ';
-                    $insert_his_sql  .= 'NULL, ';
-                } else {
-                    $insert_data_sql .= "'" . addslashes($$item_name) . "', ";
-                    $insert_his_sql  .= "'" . addslashes($$item_name) . "', ";
+                $insert_data_sql .= 'NULL, ';
+                $insert_his_sql  .= 'NULL, ';
+            } else {
+                $insert_data_sql .= "'" . addslashes($$item_name) . "', ";
+                $insert_his_sql  .= "'" . addslashes($$item_name) . "', ";
             }
         }
         $insert_data_sql = mb_substr($insert_data_sql, 0, -2) . ')';
